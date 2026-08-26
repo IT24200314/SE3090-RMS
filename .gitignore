@@ -1,0 +1,35 @@
+## Visual Studio / .NET
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+.idea/
+
+## Node / Web
+node_modules/
+dist/
+build/
+.next/
+.env
+.env.local
+
+## Flutter / Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+
+## Python / LangGraph
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+## Antigravity / IDE temp
+.system_generated/
+*.log
