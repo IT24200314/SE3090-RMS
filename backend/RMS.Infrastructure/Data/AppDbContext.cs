@@ -31,12 +31,30 @@ public class AppDbContext : DbContext
     /// <summary>Gets or sets the maintenance work order tickets table.</summary>
     public DbSet<MaintenanceTicket> MaintenanceTickets => Set<MaintenanceTicket>();
 
+    /// <summary>Gets or sets the users and authentication profiles table.</summary>
+    public DbSet<User> Users => Set<User>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         
-        // Optimize search queries by indexing frequently filtered status columns
+        // Optimize search and filter queries with B-Tree indexes
         modelBuilder.Entity<Property>().HasIndex(p => p.Status);
+        modelBuilder.Entity<Property>().HasIndex(p => p.Title);
+        modelBuilder.Entity<Property>().HasIndex(p => p.Address);
+
         modelBuilder.Entity<MaintenanceTicket>().HasIndex(m => m.Status);
+        modelBuilder.Entity<MaintenanceTicket>().HasIndex(m => m.Priority);
+
+        modelBuilder.Entity<TenantApplication>().HasIndex(t => t.Status);
+
+        modelBuilder.Entity<User>().HasIndex(u => u.Email).IsUnique();
+
+        // Relational configurations
+        modelBuilder.Entity<Lease>()
+            .HasOne(l => l.Property)
+            .WithMany(p => p.Leases)
+            .HasForeignKey(l => l.PropertyId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

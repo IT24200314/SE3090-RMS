@@ -21,11 +21,19 @@ class ApiClient {
     'Accept': 'application/json',
   };
 
+  static void setAuthToken(String? token) {
+    if (token != null && token.isNotEmpty) {
+      _headers['Authorization'] = 'Bearer $token';
+    } else {
+      _headers.remove('Authorization');
+    }
+  }
+
   // Property & Lease APIs (Upamada - Component A)
   static Future<List<Property>> getProperties({String search = ''}) async {
     try {
       final uri = Uri.parse('$baseUrl/properties?search=${Uri.encodeComponent(search)}');
-      final response = await http.get(uri, headers: _headers).timeout(const Duration(seconds: 1));
+      final response = await http.get(uri, headers: _headers).timeout(const Duration(seconds: 5));
       if (response.statusCode == 200) {
         final List data = jsonDecode(response.body);
         return data.map((json) => Property.fromJson(json)).toList();

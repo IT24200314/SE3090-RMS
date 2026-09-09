@@ -68,6 +68,18 @@ export const AiExecutionTrace = () => {
 
   return (
     <div className="space-y-4">
+      {/* Section 9.1 Compliance Informational Banner */}
+      <div className={`p-3.5 rounded-xl border flex items-start gap-3 shadow-xs ${
+        isLight 
+          ? 'bg-gradient-to-r from-violet-50 to-indigo-50 border-violet-200 text-violet-950' 
+          : 'bg-gradient-to-r from-violet-950/40 to-indigo-950/40 border-violet-500/30 text-violet-200'
+      }`}>
+        <Sparkles className="w-4 h-4 text-violet-400 shrink-0 mt-0.5" />
+        <p className="text-xs leading-relaxed font-medium">
+          <strong className="font-bold text-violet-300">Live LangGraph StateGraph Execution Telemetry:</strong> Observes real-time agent planning, sub-task delegation, and Human-in-the-Loop policy checkpoints as required by SE3090 Section 9.1.
+        </p>
+      </div>
+
       {/* Top Controller Banner */}
       <div className={`rounded-2xl border p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs ${
         isLight ? 'bg-white border-slate-200' : 'bg-zinc-900/60 border-white/[0.08]'

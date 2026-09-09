@@ -10,6 +10,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/home_nav_screen.dart';
+import 'screens/auth/login_screen.dart';
+import 'services/auth_service.dart';
 
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier<ThemeMode>(ThemeMode.dark);
 
@@ -241,9 +243,54 @@ class RentalManagementApp extends StatelessWidget {
               behavior: SnackBarBehavior.floating,
             ),
           ),
-          home: const HomeNavScreen(),
+          home: const AuthGate(),
         );
       },
     );
   }
 }
+
+class AuthGate extends StatefulWidget {
+  const AuthGate({super.key});
+
+  @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+  bool _checking = true;
+  bool _isAuthenticated = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkSession();
+  }
+
+  void _checkSession() async {
+    final user = await AuthService.loadSession();
+    if (!mounted) return;
+    setState(() {
+      _checking = false;
+      _isAuthenticated = user != null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_checking) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+    if (_isAuthenticated) {
+      return const HomeNavScreen();
+    }
+    return LoginScreen(
+      onLoginSuccess: () {
+        setState(() => _isAuthenticated = true);
+      },
+    );
+  }
+}
+

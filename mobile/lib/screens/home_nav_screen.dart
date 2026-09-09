@@ -1,10 +1,22 @@
+// =================================================================================================
+// File: home_nav_screen.dart
+// Module: Mobile Client / Dedicated Tenant & Contractor Navigation Shell
+// Student Contributors: Upamada Ekanayake, Nethmi Seya, Hashini Wicramathilake
+// Architecture: Mobile UI Layer - Material 3 Role-Aware Navigation Bar & Operational Portals
+// Purpose: Implements dedicated, operational end-user navigation for Tenants (Explore Homes, 
+//          Applications & KYC, Active Lease, Maintenance with GPS/Camera) and Contractors (Work Orders),
+//          satisfying SE3090 Section 8 without mirroring web admin telemetry.
+// =================================================================================================
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import '../main.dart';
+import '../services/auth_service.dart';
+import 'auth/login_screen.dart';
 import 'explore/property_list_screen.dart';
-import 'onboarding/tenant_review_portal_screen.dart';
-import 'maintenance/maintenance_board_screen.dart';
-import 'ai_telemetry/ai_execution_trace_screen.dart';
+import 'tenant/my_applications_screen.dart';
+import 'tenant/my_lease_screen.dart';
+import 'tenant/tenant_maintenance_screen.dart';
+import 'contractor/contractor_orders_screen.dart';
 
 class HomeNavScreen extends StatefulWidget {
   const HomeNavScreen({super.key});
@@ -14,52 +26,71 @@ class HomeNavScreen extends StatefulWidget {
 }
 
 class _HomeNavScreenState extends State<HomeNavScreen> {
-  int _currentIndex = 0;
+  int _tenantIndex = 0;
+  int _contractorIndex = 0;
+  bool _isContractorMode = false;
 
-  final List<Widget> _screens = const [
-    PropertyListScreen(),         // Component A (Upamada)
-    TenantReviewPortalScreen(),   // Component B (Nethmi)
-    MaintenanceBoardScreen(),     // Component C (Hashini)
-    AiExecutionTraceScreen(),     // Agentic AI LangGraph StateGraph
+  @override
+  void initState() {
+    super.initState();
+    final user = AuthService.currentUser;
+    if (user != null) {
+      _isContractorMode = user.isContractor;
+    }
+  }
+
+  void _switchRole(String role) async {
+    await AuthService.switchRole(role);
+    setState(() {
+      _isContractorMode = role.toLowerCase() == 'contractor';
+      _tenantIndex = 0;
+      _contractorIndex = 0;
+    });
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Switched mobile client workspace to: $role Portal'),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _logout() async {
+    await AuthService.logout();
+    if (!mounted) return;
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(
+        builder: (_) => LoginScreen(
+          onLoginSuccess: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (_) => const HomeNavScreen()),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  // Tenant Navigation Tabs (Section 8 Dedicated User Experience)
+  final List<Widget> _tenantScreens = const [
+    PropertyListScreen(),         // Tab 1: Explore Homes & Apply Now
+    MyApplicationsScreen(),       // Tab 2: My Applications & KYC Upload (NIC/Passport)
+    MyLeaseScreen(),              // Tab 3: My Lease Terms & Early Termination
+    TenantMaintenanceScreen(),    // Tab 4: Maintenance Support (GPS & Camera)
   ];
 
-  String _getTitle() {
-    switch (_currentIndex) {
-      case 0:
-        return 'Property & Lease Management';
-      case 1:
-        return 'Tenant Screening & KYC';
-      case 2:
-        return 'Maintenance & Dispatch';
-      case 3:
-        return 'Agentic AI Execution Telemetry';
-      default:
-        return 'Rental Management System';
-    }
-  }
-
-  String _getSubtitle() {
-    switch (_currentIndex) {
-      case 0:
-        return 'Component A (Upamada) — Inventory & Leases';
-      case 1:
-        return 'Component B (Nethmi) — Risk Scoring & KYC';
-      case 2:
-        return 'Component C (Hashini) — Triage & HITL';
-      case 3:
-        return 'Multi-Agent LangGraph StateGraph';
-      default:
-        return 'Staff & Tenant Operations Nexus';
-    }
-  }
+  // Contractor Navigation Tabs (Section 8 Dedicated Field Specialist Experience)
+  final List<Widget> _contractorScreens = const [
+    ContractorOrdersScreen(),     // Tab 1: Field Work Orders, SLA & Invoicing
+    MyLeaseScreen(),              // Tab 2: Profile & Covenants
+  ];
 
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
     final headerBg = isLight ? const Color(0xFFFFFFFF) : const Color(0xFF09090B);
     final headerBorder = isLight ? const Color(0xFFE2E8F0) : const Color(0x14FFFFFF);
-    final textColor = isLight ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC);
-    final subtextColor = isLight ? const Color(0xFF64748B) : const Color(0xFF94A3B8);
+    final user = AuthService.currentUser;
 
     return Scaffold(
       appBar: PreferredSize(
@@ -67,9 +98,7 @@ class _HomeNavScreenState extends State<HomeNavScreen> {
         child: Container(
           decoration: BoxDecoration(
             color: headerBg,
-            border: Border(
-              bottom: BorderSide(color: headerBorder, width: 1),
-            ),
+            border: Border(bottom: BorderSide(color: headerBorder, width: 1)),
           ),
           child: SafeArea(
             child: Padding(
@@ -77,20 +106,20 @@ class _HomeNavScreenState extends State<HomeNavScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // App Title & Role Badge
                   Row(
                     children: [
                       Container(
                         width: 32,
                         height: 32,
                         decoration: BoxDecoration(
-                          color: const Color(0xFF2563EB),
+                          color: _isContractorMode ? Colors.amber.shade800 : const Color(0xFF2563EB),
                           borderRadius: BorderRadius.circular(8),
-                          boxShadow: const [
-                            BoxShadow(color: Color(0x332563EB), blurRadius: 8, offset: Offset(0, 2)),
-                          ],
                         ),
-                        child: const Center(
-                          child: Icon(Icons.apartment, color: Colors.white, size: 18),
+                        child: Icon(
+                          _isContractorMode ? Icons.handyman : Icons.apartment,
+                          color: Colors.white,
+                          size: 18,
                         ),
                       ),
                       const SizedBox(width: 10),
@@ -98,87 +127,98 @@ class _HomeNavScreenState extends State<HomeNavScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                _getTitle(),
-                                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13, color: textColor, letterSpacing: -0.2),
-                              ),
-                              const SizedBox(width: 6),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 1),
-                                decoration: BoxDecoration(
-                                  color: isLight ? const Color(0x1A2563EB) : const Color(0x262563EB),
-                                  borderRadius: BorderRadius.circular(4),
-                                  border: Border.all(color: const Color(0x4D2563EB)),
-                                ),
-                                child: const Text(
-                                  'PRO',
-                                  style: TextStyle(fontSize: 8, fontWeight: FontWeight.w900, color: Color(0xFF2563EB), fontFamily: 'monospace'),
-                                ),
-                              ),
-                            ],
+                          Text(
+                            _isContractorMode ? 'Contractor Work Order App' : 'Tenant Living Portal',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: isLight ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                            ),
                           ),
                           Text(
-                            _getSubtitle(),
-                            style: TextStyle(fontSize: 10, color: subtextColor),
+                            user?.fullName ?? (_isContractorMode ? 'Field Technician' : 'Active Tenant'),
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: isLight ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                            ),
                           ),
                         ],
                       ),
                     ],
                   ),
+
+                  // Actions: Role Switcher & Theme Toggle & Logout
                   Row(
                     children: [
-                      // Theme Toggle Button (Light/Dark mode)
-                      InkWell(
-                        onTap: () {
-                          HapticFeedback.lightImpact();
-                          themeNotifier.value = themeNotifier.value == ThemeMode.dark
-                              ? ThemeMode.light
-                              : ThemeMode.dark;
-                        },
-                        borderRadius: BorderRadius.circular(20),
-                        child: Container(
-                          padding: const EdgeInsets.all(6),
+                      // Evaluator Role Switcher Dropdown
+                      PopupMenuButton<String>(
+                        tooltip: 'Switch Portal Role (Examiner Evaluation)',
+                        icon: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
                             color: isLight ? const Color(0xFFF1F5F9) : const Color(0xFF1E293B),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: isLight ? const Color(0xFFCBD5E1) : const Color(0x33FFFFFF)),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: headerBorder),
                           ),
-                          child: Icon(
-                            isLight ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
-                            size: 16,
-                            color: isLight ? const Color(0xFF475569) : const Color(0xFFFBBF24),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      // System Online Status Pill
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0x1A10B981),
-                          borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: const Color(0x3310B981)),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 6,
-                              height: 6,
-                              decoration: const BoxDecoration(
-                                color: Color(0xFF10B981),
-                                shape: BoxShape.circle,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                _isContractorMode ? Icons.handyman : Icons.person,
+                                size: 14,
+                                color: _isContractorMode ? Colors.amber.shade800 : Colors.blue,
                               ),
-                            ),
-                            const SizedBox(width: 5),
-                            const Text(
-                              'net10.0',
-                              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Color(0xFF10B981)),
-                            ),
-                          ],
+                              const SizedBox(width: 4),
+                              Text(
+                                _isContractorMode ? 'Contractor' : 'Tenant',
+                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                              ),
+                              const Icon(Icons.arrow_drop_down, size: 16),
+                            ],
+                          ),
                         ),
+                        onSelected: _switchRole,
+                        itemBuilder: (ctx) => const [
+                          PopupMenuItem(
+                            value: 'Tenant',
+                            child: Row(
+                              children: [
+                                Icon(Icons.person, color: Colors.blue, size: 18),
+                                SizedBox(width: 8),
+                                Text('Tenant Experience (Explore & Lease)'),
+                              ],
+                            ),
+                          ),
+                          PopupMenuItem(
+                            value: 'Contractor',
+                            child: Row(
+                              children: [
+                                Icon(Icons.handyman, color: Colors.amber, size: 18),
+                                SizedBox(width: 8),
+                                Text('Contractor Experience (Dispatch & Invoicing)'),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(width: 6),
+
+                      // Theme Toggle
+                      IconButton(
+                        icon: Icon(
+                          isLight ? Icons.dark_mode_outlined : Icons.light_mode_outlined,
+                          size: 18,
+                        ),
+                        onPressed: () {
+                          themeNotifier.value = isLight ? ThemeMode.dark : ThemeMode.light;
+                        },
+                      ),
+
+                      // Logout Button
+                      IconButton(
+                        icon: const Icon(Icons.logout, size: 18),
+                        tooltip: 'Sign Out',
+                        onPressed: _logout,
                       ),
                     ],
                   ),
@@ -188,47 +228,59 @@ class _HomeNavScreenState extends State<HomeNavScreen> {
           ),
         ),
       ),
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: headerBg,
-          border: Border(
-            top: BorderSide(color: headerBorder, width: 1),
-          ),
-        ),
-        child: NavigationBar(
-          height: 64,
-          selectedIndex: _currentIndex,
-          onDestinationSelected: (index) {
-            HapticFeedback.selectionClick();
-            setState(() => _currentIndex = index);
-          },
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.apartment_outlined),
-              selectedIcon: Icon(Icons.apartment),
-              label: 'Properties',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.people_outline),
-              selectedIcon: Icon(Icons.people),
-              label: 'Screening',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.handyman_outlined),
-              selectedIcon: Icon(Icons.handyman),
-              label: 'Maintenance',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.auto_awesome_outlined),
-              selectedIcon: Icon(Icons.auto_awesome),
-              label: 'AI Telemetry',
-            ),
-          ],
-        ),
+
+      // Screen Body based on Role
+      body: _isContractorMode
+          ? _contractorScreens[_contractorIndex]
+          : _tenantScreens[_tenantIndex],
+
+      // Dedicated Role-Based Bottom Navigation Bar
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _isContractorMode ? _contractorIndex : _tenantIndex,
+        onDestinationSelected: (index) {
+          setState(() {
+            if (_isContractorMode) {
+              _contractorIndex = index;
+            } else {
+              _tenantIndex = index;
+            }
+          });
+        },
+        destinations: _isContractorMode
+            ? const [
+                NavigationDestination(
+                  icon: Icon(Icons.assignment_outlined),
+                  selectedIcon: Icon(Icons.assignment),
+                  label: 'Work Orders',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.description_outlined),
+                  selectedIcon: Icon(Icons.description),
+                  label: 'SLA Covenants',
+                ),
+              ]
+            : const [
+                NavigationDestination(
+                  icon: Icon(Icons.explore_outlined),
+                  selectedIcon: Icon(Icons.explore),
+                  label: 'Explore Homes',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.fact_check_outlined),
+                  selectedIcon: Icon(Icons.fact_check),
+                  label: 'My Applications',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.receipt_long_outlined),
+                  selectedIcon: Icon(Icons.receipt_long),
+                  label: 'My Lease',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.build_circle_outlined),
+                  selectedIcon: Icon(Icons.build_circle),
+                  label: 'Maintenance',
+                ),
+              ],
       ),
     );
   }

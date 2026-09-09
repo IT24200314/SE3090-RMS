@@ -19,10 +19,12 @@ import {
   ArrowUpDown,
   FileText,
   XCircle,
-  ExternalLink
+  ExternalLink,
+  Plus
 } from 'lucide-react';
 import { PropertyCard } from './PropertyCard';
 import { LeaseModal } from './LeaseModal';
+import { AddPropertyModal } from './AddPropertyModal';
 import { AiExecutionTrace } from './AiExecutionTrace';
 import { useToast } from '../common/Toast';
 import { useTheme } from '../../context/ThemeContext';
@@ -83,6 +85,7 @@ export const PropertyList = () => {
   const [loading, setLoading] = useState(false);
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [modalMode, setModalMode] = useState(null); // 'draft' | 'terminate'
+  const [showAddModal, setShowAddModal] = useState(false);
   const { addToast } = useToast();
 
   const fetchProperties = useCallback(async () => {
@@ -359,6 +362,16 @@ export const PropertyList = () => {
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-blue-600' : ''}`} />
           </button>
+
+          {/* + Add Property Button */}
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold shadow-sm shadow-blue-600/30 transition-all cursor-pointer"
+            title="Create New Property Listing"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>Add Property</span>
+          </button>
         </div>
       </div>
 
@@ -517,6 +530,16 @@ export const PropertyList = () => {
         property={selectedProperty}
         onSubmitDraft={submitDraft}
         onSubmitTerminate={submitTerminate}
+      />
+
+      {/* Modal for Creating New Properties */}
+      <AddPropertyModal
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onPropertyCreated={(newProp) => {
+          setProperties(prev => [newProp, ...prev]);
+          fetchProperties();
+        }}
       />
     </div>
   );

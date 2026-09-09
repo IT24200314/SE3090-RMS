@@ -16,13 +16,22 @@ import { ToastProvider } from './components/common/Toast';
 import { PropertyList } from './components/properties/PropertyList';
 import { AiExecutionTrace } from './components/properties/AiExecutionTrace';
 import { TenantReviewPortal } from './components/tenants/TenantReviewPortal';
+import { TenantPortalView } from './components/tenants/TenantPortalView';
 import { MaintenanceBoard } from './components/maintenance/MaintenanceBoard';
 
 function DashboardContent() {
   const [activeTab, setActiveTab] = useState('properties');
+  const [workspaceMode, setWorkspaceMode] = useState('manager'); // 'manager' | 'tenant'
   const { theme } = useTheme();
 
   const getHeaderDetails = () => {
+    if (workspaceMode === 'tenant') {
+      return {
+        title: 'Tenant Living Portal',
+        subtitle: 'Renter Experience — Search Properties, KYC Verification, Active Lease & Maintenance'
+      };
+    }
+
     switch (activeTab) {
       case 'properties':
         return {
@@ -61,21 +70,35 @@ function DashboardContent() {
         : 'bg-[#F8FAFC] text-slate-900'
     }`}>
       {/* Sidebar Navigation */}
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
+      <Sidebar activeTab={activeTab} setActiveTab={(tab) => {
+        setActiveTab(tab);
+        setWorkspaceMode('manager');
+      }} />
 
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Header currentTitle={title} subtitle={subtitle} />
+        <Header 
+          currentTitle={title} 
+          subtitle={subtitle}
+          workspaceMode={workspaceMode}
+          onToggleWorkspaceMode={setWorkspaceMode}
+        />
 
         <main className="flex-1 p-6 overflow-y-auto">
           <div className="max-w-7xl mx-auto space-y-6">
             {/* Dynamic KPI Overview Ribbon */}
             <MetricsOverview stats={{ totalProperties: 4, occupiedCount: 1, availableCount: 2, hitlCount: 1, pendingKyc: 2 }} />
 
-            {activeTab === 'properties' && <PropertyList />}
-            {activeTab === 'tenants' && <TenantReviewPortal />}
-            {activeTab === 'maintenance' && <MaintenanceBoard />}
-            {activeTab === 'ai-trace' && <AiExecutionTrace />}
+            {workspaceMode === 'tenant' ? (
+              <TenantPortalView />
+            ) : (
+              <>
+                {activeTab === 'properties' && <PropertyList />}
+                {activeTab === 'tenants' && <TenantReviewPortal />}
+                {activeTab === 'maintenance' && <MaintenanceBoard />}
+                {activeTab === 'ai-trace' && <AiExecutionTrace />}
+              </>
+            )}
           </div>
         </main>
       </div>

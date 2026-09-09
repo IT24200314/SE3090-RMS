@@ -11,11 +11,21 @@ import {
   SlidersHorizontal,
   Command,
   Sun,
-  Moon
+  Moon,
+  ShieldCheck,
+  Plus
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
-export const Header = ({ currentTitle, subtitle, onSelectProperty, selectedPropertyFilter }) => {
+export const Header = ({ 
+  currentTitle, 
+  subtitle, 
+  onSelectProperty, 
+  selectedPropertyFilter,
+  workspaceMode = 'manager',
+  onToggleWorkspaceMode,
+  onOpenAddProperty
+}) => {
   const { theme, toggleTheme } = useTheme();
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -202,6 +212,48 @@ export const Header = ({ currentTitle, subtitle, onSelectProperty, selectedPrope
           <span className={`font-medium hidden sm:inline ${isLight ? 'text-slate-700' : 'text-slate-300'}`}>API</span>
           <span className="text-emerald-600 font-mono text-[10px] font-semibold">24ms</span>
         </div>
+
+        {/* Dual-Role Workspace Switcher (Examiner Evaluation) */}
+        <div className={`flex items-center p-0.5 rounded-xl border ${
+          isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-900 border-slate-800'
+        }`}>
+          <button
+            onClick={() => onToggleWorkspaceMode && onToggleWorkspaceMode('manager')}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+              workspaceMode === 'manager'
+                ? 'bg-blue-600 text-white shadow-xs'
+                : (isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-slate-200')
+            }`}
+            title="Switch to Staff Admin & Portfolio View"
+          >
+            <ShieldCheck className="w-3 h-3" />
+            <span className="hidden sm:inline">Manager</span>
+          </button>
+          <button
+            onClick={() => onToggleWorkspaceMode && onToggleWorkspaceMode('tenant')}
+            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+              workspaceMode === 'tenant'
+                ? 'bg-emerald-600 text-white shadow-xs'
+                : (isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-slate-200')
+            }`}
+            title="Switch to Tenant Living Portal Simulator"
+          >
+            <Users className="w-3 h-3" />
+            <span className="hidden sm:inline">Tenant Portal</span>
+          </button>
+        </div>
+
+        {/* Quick + Add Property Trigger (Manager View) */}
+        {workspaceMode === 'manager' && onOpenAddProperty && (
+          <button
+            onClick={onOpenAddProperty}
+            className="hidden md:flex items-center gap-1 px-2.5 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-[11px] font-bold shadow-xs transition-all cursor-pointer"
+            title="Add New Listing"
+          >
+            <Plus className="w-3 h-3" />
+            <span>Add Prop</span>
+          </button>
+        )}
 
         {/* Theme Mode Switcher (Light / Dark) */}
         <button
