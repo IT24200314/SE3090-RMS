@@ -7,6 +7,15 @@
 #          and providing auditable JSON execution traces (never called directly by frontend clients).
 # =================================================================================================
 
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+
+# Automatically load .env from current directory or parent
+env_path = Path(__file__).parent / ".env"
+if env_path.exists():
+    load_dotenv(dotenv_path=env_path)
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional, Dict, Any, List
@@ -48,6 +57,7 @@ def health_check():
     }
 
 @app.post("/agent/workflow/start", response_model=WorkflowState)
+@app.post("/api/orchestrator/run", response_model=WorkflowState)
 def start_workflow(req: WorkflowStartRequest):
     workflow_id = f"WF-{uuid.uuid4().hex[:8].upper()}"
     entity_id = req.target_entity_id or str(uuid.uuid4())
