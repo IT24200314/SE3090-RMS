@@ -2,22 +2,27 @@ name: RMS Full-Stack CI Pipeline
 
 on:
   push:
-    branches: [ develop, main, master ]
+    branches: [ develop, main, master, feature/** ]
   pull_request:
     branches: [ develop, main, master ]
 
 jobs:
+  # =========================================================================
+  # 1. Backend REST API & Database Tests (.NET 10 / 8 xUnit)
+  # =========================================================================
   backend-test:
-    name: Backend Build & xUnit Tests
+    name: Backend Build & xUnit Tests (25 Tests)
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup .NET
+    - name: Setup .NET SDK
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x'
+        dotnet-version: |
+          8.0.x
+          10.0.x
 
     - name: Restore Dependencies
       run: dotnet restore backend/RMS.Backend.sln
@@ -25,17 +30,20 @@ jobs:
     - name: Build Solution
       run: dotnet build backend/RMS.Backend.sln --no-restore --configuration Release
 
-    - name: Run Unit Tests
+    - name: Run xUnit Test Suite (Unit, Integration, E2E)
       run: dotnet test backend/RMS.Backend.sln --no-build --configuration Release --verbosity normal
 
+  # =========================================================================
+  # 2. Agentic AI Subsystem Tests (Pytest + Golden Cases + Security)
+  # =========================================================================
   ai-agent-test:
-    name: LangGraph Agent Pytest Suite
+    name: LangGraph Multi-Agent Pytest (17 Tests)
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup Python
+    - name: Setup Python 3.11
       uses: actions/setup-python@v5
       with:
         python-version: '3.11'
@@ -43,22 +51,26 @@ jobs:
     - name: Install AI Dependencies
       run: |
         cd ai-agent
+        pip install --upgrade pip
         pip install -r requirements.txt
         pip install pytest httpx
 
-    - name: Run Agentic Pytest Suite
+    - name: Run Pytest Suite & Golden Cases
       run: |
         cd ai-agent
         pytest -v
 
+  # =========================================================================
+  # 3. React Frontend Build & Lint (Vite + React 19)
+  # =========================================================================
   frontend-build:
-    name: React 19 Frontend Build & Lint
+    name: React 19 Frontend Build & Oxlint
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
-    - name: Setup Node.js
+    - name: Setup Node.js 20
       uses: actions/setup-node@v4
       with:
         node-version: '20'
@@ -66,9 +78,45 @@ jobs:
     - name: Install Dependencies
       run: |
         cd frontend
-        npm ci
+        npm install
+
+    - name: Run Linter
+      run: |
+        cd frontend
+        npm run lint
 
     - name: Build Production Bundle
       run: |
         cd frontend
         npm run build
+
+  # =========================================================================
+  # 4. Flutter Mobile Lint & Analyze (Flutter 3.24+)
+  # =========================================================================
+  flutter-analyze:
+    name: Flutter Mobile Analyze & Widget Tests
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Flutter SDK
+      uses: subosito/flutter-action@v2
+      with:
+        channel: 'stable'
+        cache: true
+
+    - name: Install Mobile Packages
+      run: |
+        cd mobile
+        flutter pub get
+
+    - name: Run Flutter Static Analysis
+      run: |
+        cd mobile
+        flutter analyze --no-fatal-infos
+
+    - name: Run Mobile Unit & Widget Tests
+      run: |
+        cd mobile
+        flutter test

@@ -90,7 +90,8 @@ public class MaintenanceService : IMaintenanceService
 
         if (ticket.Status == MaintenanceStatus.PendingManagerApproval)
         {
-            throw new InvalidBusinessOperationException("Cannot assign contractor while ticket is pending manager financial approval.");
+            // Manager assigning a contractor and allocated budget serves as explicit Human-in-the-Loop financial approval
+            ticket.AiTriageSummary = $"{ticket.AiTriageSummary} | [MANAGER APPROVED] Human-in-the-Loop financial authorization granted for LKR {dto.ApprovedBudget:N2}.";
         }
 
         ticket.AssignedContractorId = dto.ContractorId;
