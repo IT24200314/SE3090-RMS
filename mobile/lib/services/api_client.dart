@@ -16,8 +16,14 @@ import '../models/tenant_application.dart';
 import '../models/maintenance_ticket.dart';
 
 class ApiClient {
-  // Configured for local development: 127.0.0.1 via adb reverse on physical phone, 10.0.2.2 on emulator
+  // Production cloud API URL (Deployed on Render with Neon PostgreSQL)
+  static const String liveCloudUrl = 'https://rms-backend-api-yons.onrender.com/api';
+
+  // Set to true to connect anywhere via cellular/WiFi, or false for local adb reverse
+  static bool useCloudApi = true;
+
   static String get baseUrl {
+    if (useCloudApi) return liveCloudUrl;
     if (kIsWeb) return 'http://localhost:5000/api';
     try {
       if (Platform.isAndroid) return 'http://127.0.0.1:5000/api';
