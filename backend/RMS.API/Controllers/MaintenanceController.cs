@@ -36,7 +36,10 @@ public class MaintenanceController : ControllerBase
     [ProducesResponseType(typeof(MaintenanceTicketResponseDto), StatusCodes.Status201Created)]
     public async Task<IActionResult> CreateTicket([FromBody] CreateMaintenanceTicketDto dto)
     {
+        // 1. Create maintenance ticket in Open status linked to the specified property and tenant
         var result = await _maintenanceService.CreateTicketAsync(dto);
+
+        // 2. Return HTTP 201 Created with Location header and created ticket response
         return CreatedAtAction(nameof(GetTicketById), new { id = result.Id }, result);
     }
 
@@ -47,7 +50,10 @@ public class MaintenanceController : ControllerBase
     [ProducesResponseType(typeof(MaintenanceTicketResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetTicketById(Guid id)
     {
+        // Fetch ticket details by unique identifier
         var result = await _maintenanceService.GetTicketByIdAsync(id);
+
+        // Return HTTP 200 OK with ticket payload
         return Ok(result);
     }
 
@@ -60,7 +66,10 @@ public class MaintenanceController : ControllerBase
         [FromQuery] MaintenanceStatus? status,
         [FromQuery] MaintenancePriority? priority)
     {
+        // Retrieve tickets optionally filtered by status (e.g. PendingManagerApproval) and priority (e.g. Emergency)
         var results = await _maintenanceService.GetTicketsAsync(status, priority);
+
+        // Return HTTP 200 OK with list of tickets
         return Ok(results);
     }
 
@@ -71,7 +80,10 @@ public class MaintenanceController : ControllerBase
     [ProducesResponseType(typeof(MaintenanceTicketResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> AssignContractor(Guid id, [FromBody] AssignContractorDto dto)
     {
+        // Assign licensed contractor and approved budget ceiling; rejects if pending manager approval
         var result = await _maintenanceService.AssignContractorAsync(id, dto);
+
+        // Return HTTP 200 OK with assigned ticket status
         return Ok(result);
     }
 
@@ -82,7 +94,10 @@ public class MaintenanceController : ControllerBase
     [ProducesResponseType(typeof(MaintenanceTicketResponseDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> CompleteTicket(Guid id, [FromBody] CompleteTicketDto dto)
     {
+        // Update ticket to Resolved state with settled final cost and completion notes
         var result = await _maintenanceService.CompleteTicketAsync(id, dto);
+
+        // Return HTTP 200 OK with closed ticket details
         return Ok(result);
     }
 
@@ -93,7 +108,10 @@ public class MaintenanceController : ControllerBase
     [ProducesResponseType(typeof(TriageAndEstimateResultDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> TriageAndEstimate(Guid id)
     {
+        // Perform keyword categorization (Plumbing, Electrical, etc.) and pause at PendingManagerApproval if cost >= LKR 50K
         var result = await _maintenanceService.TriageAndEstimateCostAsync(id);
+
+        // Return HTTP 200 OK with triage summary, estimated cost, and approval flag
         return Ok(result);
     }
 }

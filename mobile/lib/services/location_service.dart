@@ -1,3 +1,12 @@
+// =================================================================================================
+// File: location_service.dart
+// Module: Component C: Maintenance & Work-Order Operations
+// Student Contributor: Hashini Wicramathilake (IT24200314 Group Member)
+// Architecture: Mobile Hardware Layer - Device GPS Geolocation Service
+// Purpose: Interacts with mobile GPS hardware to capture live latitude/longitude coordinates
+//          when tenants submit maintenance tickets, assisting contractors with on-site navigation.
+// =================================================================================================
+
 import 'package:geolocator/geolocator.dart';
 
 class LocationService {

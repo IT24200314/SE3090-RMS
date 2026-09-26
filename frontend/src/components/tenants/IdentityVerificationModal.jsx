@@ -1,3 +1,12 @@
+// =================================================================================================
+// File: IdentityVerificationModal.jsx
+// Module: Component B: Tenant Screening & Onboarding Management
+// Student Contributor: Nethmi Seya (IT24200314 Group Member)
+// Architecture: Frontend Layer - KYC Verification & Inspection Modal
+// Purpose: Allows property managers to visually inspect submitted NIC / Passport images,
+//          perform OCR verification, zoom/rotate document scans, and confirm tenant identity.
+// =================================================================================================
+
 import React, { useState } from 'react';
 import { 
   X, 
@@ -20,6 +29,7 @@ const IdentityVerificationModalContent = ({ onClose, application, onVerify }) =>
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
+  // State management for image zoom, rotation, and KYC verification checklist
   const [loading, setLoading] = useState(false);
   const [zoomLevel, setZoomLevel] = useState(1);
   const [rotation, setRotation] = useState(0);

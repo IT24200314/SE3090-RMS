@@ -1,3 +1,10 @@
+// =================================================================================================
+// File: Header.jsx
+// Module: Frontend Layout Components - Universal Top Navigation & Control Bar
+// Purpose: Hosts the global search input with Ctrl+K shortcut, theme toggle (Dark/Light),
+//          workspace role mode switcher (Manager vs. Tenant), and active section title metadata.
+// =================================================================================================
+
 import React, { useState, useEffect } from 'react';
 import { 
   Building2, 

@@ -18,11 +18,11 @@ The **Rental Management System (RMS)** is a comprehensive full-stack and autonom
 1. **Upamada Ekanayake (Leader - IT24200314)**:
    - **Component A**: Property Listing & Lease Lifecycle Management
    - **Agentic AI**: Planning & Coordination Agent (`planner.py`)
-2. **Nethmi Seya (IT24200314-M2)**:
+2. **Nethmi Seya (IT24-M2)**:
    - **Component B**: Tenant Screening & Onboarding Management
    - **Agentic AI**: Tenant Screening & Risk Scoring Agent (`tenant_agent.py`)
    - **Native Mobile Feature**: Camera KYC Document Capture
-3. **Hashini Wicramathilake (IT24200314-M3)**:
+3. **Hashini Wicramathilake (IT24100427-M3)**:
    - **Component C**: Maintenance & Work-Order Operations
    - **Agentic AI**: Maintenance Triage & Dispatch Agent (`maintenance_agent.py`) & Deterministic Validator Node (`validator.py`)
    - **Native Mobile Feature**: GPS Geolocation Tagging
@@ -76,10 +76,10 @@ graph TD
 ## 🧪 Automated Testing & CI/CD Pipeline
 
 The repository includes comprehensive automated tests running on GitHub Actions:
-- **Backend xUnit Suite**: 9 unit and service tests verifying business logic, state machines, and constraints.
+- **Backend xUnit Suite**: 11 unit and service tests verifying business logic, state machines, constraints, and Section 11 third-party integration (Currency Exchange & GPS Geocoding).
 - **AI Agent Pytest Suite**: 8 automated test cases verifying LangGraph node plans, risk scoring, and HITL pauses.
-- **Frontend Vite Build**: Production bundle check with 0 warnings.
-- **Flutter Analysis**: Static code analysis and widget architecture checks.
+- **Frontend Vite Build**: Production bundle check with 0 errors.
+- **Flutter Widget & Hardware Tests**: Widget tests passing; Camera KYC and GPS Geolocation verified on physical Android device.
 
 ### Running Tests Locally:
 

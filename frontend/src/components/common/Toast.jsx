@@ -1,3 +1,10 @@
+// =================================================================================================
+// File: Toast.jsx
+// Module: Frontend Common Components - Floating Notification Feedback System
+// Purpose: Provides an asynchronous Toast notification context and floating overlay container
+//          displaying operational success, warning, and informational alerts across all pages.
+// =================================================================================================
+
 import React, { createContext, useContext, useState, useCallback } from 'react';
 import { CheckCircle2, AlertTriangle, Info, X } from 'lucide-react';
 
@@ -6,6 +13,7 @@ const ToastContext = createContext(null);
 export const ToastProvider = ({ children }) => {
   const [toasts, setToasts] = useState([]);
 
+  // Dispatches a self-dismissing notification toast
   const addToast = useCallback((message, type = 'success', duration = 3500) => {
     const id = Date.now() + Math.random();
     setToasts((prev) => [...prev, { id, message, type }]);

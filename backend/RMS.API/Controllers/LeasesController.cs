@@ -40,19 +40,25 @@ public class LeasesController : ControllerBase
     {
         try
         {
+            // 1. Pass draft lease details to service to verify property availability and mark property Occupied
             var lease = await _propertyLeaseService.GenerateLeaseAgreementAsync(dto);
+
+            // 2. Return HTTP 201 Created with the drafted lease contract details
             return StatusCode(StatusCodes.Status201Created, lease);
         }
         catch (KeyNotFoundException ex)
         {
+            // Return HTTP 404 if the target property does not exist
             return NotFound(new { message = ex.Message });
         }
         catch (InvalidOperationException ex)
         {
+            // Return HTTP 400 if the property is already occupied or under maintenance
             return BadRequest(new { message = ex.Message });
         }
         catch (ArgumentException ex)
         {
+            // Return HTTP 400 if dates or agreed rent values are invalid
             return BadRequest(new { message = ex.Message });
         }
     }
@@ -71,15 +77,20 @@ public class LeasesController : ControllerBase
     {
         try
         {
+            // 1. Execute early lease termination: sets Lease status to Terminated and resets Property status to Available
             var result = await _propertyLeaseService.TerminateLeaseAsync(id, dto.TerminationReason);
+
+            // 2. Return HTTP 200 OK with updated lease details
             return Ok(result);
         }
         catch (KeyNotFoundException ex)
         {
+            // Return HTTP 404 if lease record is not found
             return NotFound(new { message = ex.Message });
         }
         catch (InvalidOperationException ex)
         {
+            // Return HTTP 400 if lease is already terminated or expired
             return BadRequest(new { message = ex.Message });
         }
     }

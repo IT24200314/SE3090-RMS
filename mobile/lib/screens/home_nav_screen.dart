@@ -107,45 +107,54 @@ class _HomeNavScreenState extends State<HomeNavScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // App Title & Role Badge
-                  Row(
-                    children: [
-                      Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: _isContractorMode ? Colors.amber.shade800 : const Color(0xFF2563EB),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Icon(
-                          _isContractorMode ? Icons.handyman : Icons.apartment,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                      ),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            _isContractorMode ? 'Contractor Work Order App' : 'Tenant Living Portal',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: isLight ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
-                            ),
+                  Expanded(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 32,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: _isContractorMode ? Colors.amber.shade800 : const Color(0xFF2563EB),
+                            borderRadius: BorderRadius.circular(8),
                           ),
-                          Text(
-                            user?.fullName ?? (_isContractorMode ? 'Field Technician' : 'Active Tenant'),
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: isLight ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
-                            ),
+                          child: Icon(
+                            _isContractorMode ? Icons.handyman : Icons.apartment,
+                            color: Colors.white,
+                            size: 18,
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                _isContractorMode ? 'Contractor Work Order App' : 'Tenant Living Portal',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  fontWeight: FontWeight.bold,
+                                  color: isLight ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                                ),
+                              ),
+                              Text(
+                                user?.fullName ?? (_isContractorMode ? 'Field Technician' : 'Active Tenant'),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: isLight ? const Color(0xFF64748B) : const Color(0xFF94A3B8),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 6),
 
                   // Actions: Role Switcher & Theme Toggle & Logout
                   Row(

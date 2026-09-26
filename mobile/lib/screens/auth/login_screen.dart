@@ -168,9 +168,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Register Navigation
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                  // Register Navigation (Responsive wrap prevents overflow)
+                  Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
                     children: [
                       Text("Don't have an account?", style: theme.textTheme.bodyMedium),
                       TextButton(

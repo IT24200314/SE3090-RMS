@@ -1,3 +1,14 @@
+// =================================================================================================
+// File: RiskScoreBadge.jsx
+// Module: Component B: Tenant Screening & Onboarding Management
+// Student Contributor: Nethmi Seya (IT24200314 Group Member)
+// Architecture: Frontend Layer - Visual Risk Scoring UI Widget
+// Purpose: Renders circular SVG risk score gauges and color-coded status badges for tenant applications.
+//          - Score >= 80: Low Risk (Emerald)
+//          - Score 50-79: Moderate Risk (Amber)
+//          - Score < 50: High Risk (Crimson)
+// =================================================================================================
+
 import React from 'react';
 import { ShieldCheck, ShieldAlert, AlertOctagon, Sparkles } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
@@ -6,10 +17,10 @@ export const RiskScoreGauge = ({ score = 85, size = 68, showLabel = true }) => {
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
-  // Score bounds 0-100
+  // Clamp tenant credit/risk score between 0 and 100
   const clampedScore = Math.min(Math.max(Number(score) || 0, 0), 100);
   
-  // Calculate SVG arc parameters
+  // Calculate SVG circular arc stroke dimensions for animated radial rendering
   const strokeWidth = 6;
   const radius = (size - strokeWidth * 2) / 2;
   const circumference = 2 * Math.PI * radius;

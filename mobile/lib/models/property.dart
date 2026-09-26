@@ -1,3 +1,11 @@
+// =================================================================================================
+// File: property.dart
+// Module: Component A: Property Listing & Lease Lifecycle Management
+// Student Contributor: Upamada Ekanayake (Group Leader - IT24200314)
+// Architecture: Mobile Layer - Domain Model for Real-Estate Properties
+// Purpose: Models rental unit details, monthly rental pricing, security deposits, and availability status.
+// =================================================================================================
+
 class Property {
   final String id;
   final String title;

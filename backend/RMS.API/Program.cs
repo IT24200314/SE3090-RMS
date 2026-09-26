@@ -22,6 +22,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+builder.Services.AddHttpClient();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
@@ -110,6 +111,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddScoped<IPropertyLeaseService, PropertyLeaseService>();
 builder.Services.AddScoped<ITenantScreeningService, TenantScreeningService>();
 builder.Services.AddScoped<IMaintenanceService, MaintenanceService>();
+builder.Services.AddScoped<IThirdPartyIntegrationService, ThirdPartyIntegrationService>();
 
 var app = builder.Build();
 

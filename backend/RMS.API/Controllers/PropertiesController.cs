@@ -39,11 +39,15 @@ public class PropertiesController : ControllerBase
     {
         try
         {
+            // 1. Pass the validated DTO to the PropertyLeaseService to handle entity creation and persistence
             var created = await _propertyLeaseService.CreatePropertyAsync(dto);
+
+            // 2. Return HTTP 201 Created with Location header pointing to GetPropertyById and created object body
             return CreatedAtAction(nameof(GetPropertyById), new { id = created.Id }, created);
         }
         catch (ArgumentException ex)
         {
+            // Return HTTP 400 Bad Request if validation rules fail (e.g., negative rent or missing title)
             return BadRequest(new { message = ex.Message });
         }
     }
@@ -59,7 +63,10 @@ public class PropertiesController : ControllerBase
     [ProducesResponseType(typeof(IEnumerable<PropertyResponseDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetProperties([FromQuery] string? search, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
     {
+        // Query database via service with text search filter and pagination limits
         var properties = await _propertyLeaseService.GetPropertiesAsync(search, page, pageSize);
+
+        // Return HTTP 200 OK with list of properties
         return Ok(properties);
     }
 
@@ -75,11 +82,15 @@ public class PropertiesController : ControllerBase
     {
         try
         {
+            // Look up property by unique Guid in PostgreSQL database
             var property = await _propertyLeaseService.GetPropertyByIdAsync(id);
+
+            // Return HTTP 200 OK with matching property details
             return Ok(property);
         }
         catch (KeyNotFoundException ex)
         {
+            // Return HTTP 404 Not Found if no property exists with the requested Guid
             return NotFound(new { message = ex.Message });
         }
     }

@@ -1,3 +1,12 @@
+// =================================================================================================
+// File: metrics_overview_widget.dart
+// Module: Mobile Client / Real-Time Dashboard KPI Metrics Widget
+// Student Contributors: Upamada Ekanayake, Nethmi Seya, Hashini Wicramathilake
+// Architecture: Mobile UI Layer - Horizontally Scrollable KPI Summary Cards
+// Purpose: Displays live portfolio metrics (total units, occupied, available, revenue, pending KYC)
+//          in a responsive, touch-friendly Material 3 horizontal card deck.
+// =================================================================================================
+
 import 'package:flutter/material.dart';
 
 class MetricsOverviewWidget extends StatelessWidget {

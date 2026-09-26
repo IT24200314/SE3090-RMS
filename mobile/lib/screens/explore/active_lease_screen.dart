@@ -1,3 +1,12 @@
+// =================================================================================================
+// File: active_lease_screen.dart
+// Module: Component A: Property Listing & Lease Lifecycle Management
+// Student Contributor: Upamada Ekanayake (Group Leader - IT24200314)
+// Architecture: Mobile Layer - Flutter Screen for Active Lease Inspection & Early Termination
+// Purpose: Displays current active tenancy agreement, monthly rent, and provides the non-trivial
+//          early lease termination trigger that atomically resets property status to 'Available'.
+// =================================================================================================
+
 import 'package:flutter/material.dart';
 import '../../services/api_client.dart';
 

@@ -1,3 +1,11 @@
+// =================================================================================================
+// File: maintenance_ticket.dart
+// Module: Component C: Maintenance & Work-Order Operations
+// Student Contributor: Hashini Wicramathilake (IT24200314 Group Member)
+// Architecture: Mobile Layer - Domain Model for Maintenance Tickets
+// Purpose: Models work-order issues, photo URLs, priority levels, estimated repair costs, and GPS coordinates.
+// =================================================================================================
+
 class MaintenanceTicket {
   final String id;
   final String propertyId;

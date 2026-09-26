@@ -1,3 +1,12 @@
+// =================================================================================================
+// File: HighCostApprovalCard.jsx
+// Module: Component C: Maintenance & Multi-Agent Dispatch (HITL Node)
+// Student Contributor: Hashini Wicramathilake (IT24200314 Group Member)
+// Architecture: Frontend Layer - Human-In-The-Loop (HITL) Financial Authorization Card
+// Purpose: Renders high-priority approval prompt when maintenance estimates exceed LKR 50,000,
+//          enforcing safety guardrails and manual landlord/manager consent before contractor dispatch.
+// =================================================================================================
+
 import React from 'react';
 import { ShieldAlert, CheckCircle2, XCircle, AlertTriangle, ArrowRight } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';

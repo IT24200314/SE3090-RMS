@@ -1,3 +1,12 @@
+// =================================================================================================
+// File: LeaseModal.jsx
+// Module: Component A: Property Listing & Lease Lifecycle Management
+// Student Contributor: Upamada Ekanayake (Group Leader - IT24200314)
+// Architecture: Frontend Presentation Layer - Contract Drafting & Termination Modal
+// Purpose: Multi-step dialog for property managers to draft legally structured tenancy agreements,
+//          review AI-synthesized custom clauses, compute security deposits, or execute early terminations.
+// =================================================================================================
+
 import React, { useState } from 'react';
 import { 
   X, 

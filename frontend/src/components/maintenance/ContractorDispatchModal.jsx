@@ -1,3 +1,12 @@
+// =================================================================================================
+// File: ContractorDispatchModal.jsx
+// Module: Component C: Maintenance & Multi-Agent Dispatch
+// Student Contributor: Hashini Wicramathilake (IT24200314 Group Member)
+// Architecture: Frontend Layer - Contractor Assignment & Dispatch Modal
+// Purpose: Allows property managers to select verified trade contractors, inspect quotes/ratings,
+//          and trigger automated dispatch confirmation notifications to the tenant.
+// =================================================================================================
+
 import React, { useState } from 'react';
 import { 
   X, 
@@ -13,6 +22,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
+// Verified Sri Lankan licensed contractor roster categorized by trade specialty
 const LICENSED_CONTRACTORS = [
   { 
     id: '9f8e7d6c-5b4a-3f2e-1d0c-9b8a7f6e5d4c', 

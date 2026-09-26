@@ -142,22 +142,25 @@ AUTOMATED TEST MATRIX EXECUTION SUMMARY
 ====================================================================================================
 1. Backend Domain & Service Tests (xUnit .NET 10):
    - Command: dotnet test backend/RMS.Backend.sln
-   - Results: 9 Passed, 0 Failed, 0 Skipped (Total: 9)
-   - Duration: 443 ms
+   - Results: 11 Passed, 0 Failed, 0 Skipped (Total: 11)
+   - Coverage: PropertyLeaseService, TenantScreeningService, MaintenanceService, ThirdPartyIntegrationService (Currency & GPS Geocoding)
+   - Duration: 987 ms
 
 2. Agentic AI Multi-Agent Workflow Tests (Pytest 9.1):
    - Command: pytest ai-agent/tests
    - Results: 8 Passed, 0 Failed (Total: 8)
    - Coverage: Planning node decomposition, risk auto-approval, HITL pause (LKR 50K), API routes
-   - Duration: 0.25 s
+   - Duration: 53.2 s
 
 3. React Web Frontend Production Build:
    - Command: npm run build (Vite 8.2)
-   - Results: 1,875 modules transformed, 0 bundle errors
-   - Output: dist/assets/index.js (369 kB gzip 106 kB), dist/assets/index.css (67 kB)
+   - Results: 1,877 modules transformed, 0 bundle errors
+   - Output: dist/assets/index.js (401 kB gzip 112 kB), dist/assets/index.css (73 kB)
 
-4. Flutter Mobile Static Code Analysis:
-   - Dart analyzer validation: Material 3 widgets, Clean state, native image_picker & geolocator
+4. Flutter Mobile Static & Widget Testing:
+   - Command: flutter test
+   - Results: 2 Passed, 0 Failed (LoginScreen smoke test, HomeNavScreen navigation test)
+   - Hardware: Native Camera (image_picker) & GPS (geolocator) verified on physical Android device
 ====================================================================================================
 ```
 

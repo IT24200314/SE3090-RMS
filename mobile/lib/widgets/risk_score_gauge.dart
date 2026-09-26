@@ -1,3 +1,12 @@
+// =================================================================================================
+// File: risk_score_gauge.dart
+// Module: Component B: Tenant Screening & Onboarding Management
+// Student Contributor: Nethmi Seya (IT24200314 Group Member)
+// Architecture: Mobile UI Layer - Circular Risk Score Gauge Widget
+// Purpose: Renders circular progress indicator with color coding (Emerald/Amber/Rose)
+//          representing applicant credit & financial viability risk ratings (0-100).
+// =================================================================================================
+
 import 'package:flutter/material.dart';
 
 class RiskScoreGauge extends StatelessWidget {

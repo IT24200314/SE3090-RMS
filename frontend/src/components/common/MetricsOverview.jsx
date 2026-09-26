@@ -1,3 +1,10 @@
+// =================================================================================================
+// File: MetricsOverview.jsx
+// Module: Frontend Common Components - Executive KPI Metrics Ribbon
+// Purpose: Displays top-level portfolio performance summaries: total units, monthly rental income,
+//          active tenant screening queue, and Human-in-the-Loop financial review counts.
+// =================================================================================================
+
 import React from 'react';
 import { Building2, Users, ShieldAlert, TrendingUp } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
@@ -6,6 +13,7 @@ export const MetricsOverview = ({ stats }) => {
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
+  // Define KPI metrics configuration cards mapping to portfolio, revenue, KYC, and HITL flags
   const cards = [
     {
       label: 'Portfolio Units',

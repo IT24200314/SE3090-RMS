@@ -1,3 +1,11 @@
+// =================================================================================================
+// File: tenant_application.dart
+// Module: Component B: Tenant Screening & Onboarding Management
+// Student Contributor: Nethmi Seya (IT24200314 Group Member)
+// Architecture: Mobile Layer - Domain Model for Tenant Onboarding Applications
+// Purpose: Models applicant submissions, income statements, KYC document references, and AI risk scores.
+// =================================================================================================
+
 class TenantApplication {
   final String id;
   final String tenantId;

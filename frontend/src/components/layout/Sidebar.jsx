@@ -1,3 +1,13 @@
+// =================================================================================================
+// File: Sidebar.jsx
+// Module: Frontend Layout Components - Administrative Dashboard Navigation Sidebar
+// Purpose: Renders primary navigation tabs mapped directly to each team member's component:
+//          - Upamada: Properties & Leases (Component A)
+//          - Nethmi: Tenant Screening & KYC (Component B)
+//          - Hashini: Maintenance & Dispatch (Component C)
+//          - Section 9.1: Agentic AI Telemetry Observability
+// =================================================================================================
+
 import React from 'react';
 import { 
   Building2, 
@@ -15,6 +25,7 @@ export const Sidebar = ({ activeTab, setActiveTab }) => {
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
+  // Navigation menu items mapping each view to its student owner
   const menuItems = [
     {
       id: 'properties',

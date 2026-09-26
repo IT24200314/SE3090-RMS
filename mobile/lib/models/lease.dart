@@ -1,3 +1,11 @@
+// =================================================================================================
+// File: lease.dart
+// Module: Component A: Property Listing & Lease Lifecycle Management
+// Student Contributor: Upamada Ekanayake (Group Leader - IT24200314)
+// Architecture: Mobile Layer - Domain Model for Tenancy Lease Agreements
+// Purpose: Models lease contracts, start/end dates, monthly agreed rent, and status (Draft, Active, Terminated).
+// =================================================================================================
+
 class Lease {
   final String id;
   final String propertyId;

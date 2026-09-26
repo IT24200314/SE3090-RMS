@@ -1,7 +1,17 @@
+// =================================================================================================
+// File: PropertyCard.jsx
+// Module: Component A: Property Listing & Lease Lifecycle Management
+// Student Contributor: Upamada Ekanayake (Group Leader - IT24200314)
+// Architecture: Frontend Presentation Layer - Property Inventory Card Component
+// Purpose: Renders high-fidelity property card displaying rental amounts in LKR, occupancy status,
+//          architectural features (beds, baths, sqft), and actions to draft or terminate leases.
+// =================================================================================================
+
 import React from 'react';
 import { MapPin, FileText, XCircle, Calendar, ShieldCheck, Home, Bed, Bath, Square, Sparkles } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
+// Curated architectural photography mapped to Colombo property locations
 const PROPERTY_PHOTOS = {
   'Oceanfront': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
   'Cinnamon': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',

@@ -1,3 +1,12 @@
+// =================================================================================================
+// File: api_client.dart
+// Module: Flutter Mobile Service Layer - Centralized REST HTTP Client
+// Student Contributors: Upamada Ekanayake, Nethmi Seya, Hashini Wicramathilake
+// Purpose: Implements asynchronous HTTP client connecting the Flutter mobile app directly to the
+//          shared ASP.NET Core Web API (Port 5000), supporting JWT Bearer auth, properties,
+//          Camera KYC onboarding submissions, and GPS-tagged maintenance tickets.
+// =================================================================================================
+
 import 'dart:convert';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -7,20 +16,22 @@ import '../models/tenant_application.dart';
 import '../models/maintenance_ticket.dart';
 
 class ApiClient {
-  // Configured for local development: 10.0.2.2 on Android emulator, localhost on Web
+  // Configured for local development: 127.0.0.1 via adb reverse on physical phone, 10.0.2.2 on emulator
   static String get baseUrl {
     if (kIsWeb) return 'http://localhost:5000/api';
     try {
-      if (Platform.isAndroid) return 'http://10.0.2.2:5000/api';
+      if (Platform.isAndroid) return 'http://127.0.0.1:5000/api';
     } catch (_) {}
     return 'http://localhost:5000/api';
   }
 
+  // Base HTTP request headers
   static final Map<String, String> _headers = {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   };
 
+  // Attaches or detaches JWT access token for role-protected endpoints
   static void setAuthToken(String? token) {
     if (token != null && token.isNotEmpty) {
       _headers['Authorization'] = 'Bearer $token';
@@ -29,7 +40,11 @@ class ApiClient {
     }
   }
 
-  // Property & Lease APIs (Upamada - Component A)
+  // ===============================================================================================
+  // Component A: Property & Lease APIs (Upamada Ekanayake)
+  // ===============================================================================================
+
+  // Fetches property listings from backend with optional text search query
   static Future<List<Property>> getProperties({String search = ''}) async {
     try {
       final uri = Uri.parse('$baseUrl/properties?search=${Uri.encodeComponent(search)}');
@@ -39,11 +54,12 @@ class ApiClient {
         return data.map((json) => Property.fromJson(json)).toList();
       }
     } catch (_) {
-      // Fallback local mock data for testing/offline mode
+      // Fallback local mock data for testing/offline evaluation
     }
     return _mockProperties;
   }
 
+  // Executes early lease contract termination and releases property back to Available
   static Future<bool> terminateLease(String propertyId, String reason) async {
     try {
       final uri = Uri.parse('$baseUrl/leases/$propertyId/terminate');
@@ -54,11 +70,15 @@ class ApiClient {
       );
       return response.statusCode == 200;
     } catch (_) {
-      return true; // Local simulation
+      return true; // Local simulation fallback
     }
   }
 
-  // Tenant Onboarding & Screening APIs (Nethmi - Component B)
+  // ===============================================================================================
+  // Component B: Tenant Onboarding & Screening APIs (Nethmi Seya)
+  // ===============================================================================================
+
+  // Submits tenant rental application with verified monthly income and camera-captured KYC document URL
   static Future<TenantApplication> submitApplication({
     required String propertyId,
     required double monthlyIncome,
@@ -81,6 +101,7 @@ class ApiClient {
       }
     } catch (_) {}
 
+    // Resilient offline fallback simulation with calculated 38% debt ratio
     return TenantApplication(
       id: 'app-${DateTime.now().millisecondsSinceEpoch}',
       tenantId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
@@ -94,7 +115,11 @@ class ApiClient {
     );
   }
 
-  // Maintenance & Work-Orders APIs (Hashini - Component C)
+  // ===============================================================================================
+  // Component C: Maintenance & Work-Orders APIs (Hashini Wicramathilake)
+  // ===============================================================================================
+
+  // Creates tenant maintenance work order with issue description, defect photo, and device GPS coordinates
   static Future<MaintenanceTicket> createMaintenanceTicket({
     required String propertyId,
     required String issueDescription,
@@ -121,6 +146,7 @@ class ApiClient {
       }
     } catch (_) {}
 
+    // Resilient offline fallback ticket representation
     return MaintenanceTicket(
       id: 'mt-${DateTime.now().millisecondsSinceEpoch}',
       propertyId: propertyId,
