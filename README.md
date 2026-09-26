@@ -10,19 +10,32 @@
 
 ---
 
-## 📌 Project Overview & SE3090 Alignment
+## 📌 Project Overview & SE3090 Identification
 
-The **Rental Management System (RMS)** is a comprehensive full-stack and autonomous Agentic AI application engineered for the **SLIIT SE3090 (Software Engineering Frameworks)** module.
+- **Project Title**: Rental Management System (RMS) with Multi-Agent Agentic AI Orchestration
+- **Module**: SE3090 — Software Engineering Frameworks (Year 3 | Semester 1 | 2026)
+- **Institution**: Sri Lanka Institute of Information Technology (SLIIT)
+- **Center / Campus**: SLIIT Kandy Uni | Specialization: AI (Batch 1)
+- **Group ID**: `SEF_KDY_AI_04`
+- **GitHub Repository**: https://github.com/IT24200314/SE3090-RMS
 
-### Group Members & Component Allocation (3-Member Approved Team):
-1. **Upamada Ekanayake (Leader - IT24200314)**:
+### 🌐 Verified Live Cloud Deployment URLs
+- **React 19 Admin Portal (Vercel)**: https://rms-frontend-jet-rho.vercel.app/
+- **ASP.NET Core Web API (Render)**: https://rms-backend-api-yons.onrender.com
+- **Cloud API Health Check Probe**: https://rms-backend-api-yons.onrender.com/health
+- **Interactive Swagger Documentation**: https://rms-backend-api-yons.onrender.com/swagger/index.html
+- **Database Engine**: Neon Serverless Cloud PostgreSQL (`ep-bitter-union-azwzwv86-pooler`)
+- **Flutter Mobile Client**: `mobile/build/app/outputs/flutter-apk/app-debug.apk` (150 MB Runnable APK)
+
+### Group Members & Component Allocation:
+1. **E.M.U.I.B. Ekanayake (Group Leader - IT24200314)**:
    - **Component A**: Property Listing & Lease Lifecycle Management
    - **Agentic AI**: Planning & Coordination Agent (`planner.py`)
-2. **Nethmi Seya (IT24-M2)**:
+2. **D.G.N.S. Widumini (Member - IT24101176)**:
    - **Component B**: Tenant Screening & Onboarding Management
    - **Agentic AI**: Tenant Screening & Risk Scoring Agent (`tenant_agent.py`)
    - **Native Mobile Feature**: Camera KYC Document Capture
-3. **Hashini Wicramathilake (IT24100427-M3)**:
+3. **H.A. Wickramathilaka (Member - IT24100427)**:
    - **Component C**: Maintenance & Work-Order Operations
    - **Agentic AI**: Maintenance Triage & Dispatch Agent (`maintenance_agent.py`) & Deterministic Validator Node (`validator.py`)
    - **Native Mobile Feature**: GPS Geolocation Tagging
