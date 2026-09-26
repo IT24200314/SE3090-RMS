@@ -1,0 +1,44 @@
+services:
+  # 1. ASP.NET Core 10 Web API
+  - type: web
+    name: rms-backend-api
+    runtime: docker
+    dockerfilePath: backend/Dockerfile
+    dockerContext: backend
+    plan: free
+    region: singapore
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: rms-postgres-db
+          property: connectionString
+      - key: Jwt__Key
+        value: RMS_Super_Secret_Security_Key_SE3090_Assignment_Grading_2026_Key!
+      - key: Jwt__Issuer
+        value: RMS_API
+      - key: Jwt__Audience
+        value: RMS_Clients
+      - key: AiAgent__BaseUrl
+        value: http://localhost:8000
+
+  # 2. Internal LangGraph AI Microservice
+  - type: web
+    name: rms-ai-orchestrator
+    runtime: docker
+    dockerfilePath: ai-agent/Dockerfile
+    dockerContext: ai-agent
+    plan: free
+    region: singapore
+    envVars:
+      - key: PORT
+        value: 8000
+
+databases:
+  # 3. PostgreSQL Database
+  - name: rms-postgres-db
+    plan: free
+    region: singapore
+    databaseName: rms_db
+    user: rms_admin

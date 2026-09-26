@@ -8,9 +8,10 @@
   - **Mobile**: Flutter & Dart (Material 3, Camera, GPS)
   - **AI / Automation**: LangGraph & Python Agentic Workflow Orchestration
 - **Team Allocation**:
-  - **Upamada Ekanayake (Leader)**: Property & Lease Module, Planning Agent
-  - **Nethmi Seya**: Tenant Screening & Onboarding Module, Risk Scoring Agent
-  - **Hashini Wicramathilake**: Maintenance & Operations Module, Triage/Validation Agent
+  - **E.M.U.I.B. Ekanayake (Leader - IT24200314)**: Property & Lease Module (Component A), Planning Agent
+  - **D.G.N.S. Widumini (Member - IT24101176)**: Tenant Screening & Onboarding Module (Component B), Risk Scoring Agent
+  - **H.A. Wickramathilaka (Member - IT24100427)**: Maintenance & Operations Module (Component C), Triage/Validation Agent
+  - **Group ID**: `SEF_KDY_AI_04` | SLIIT Kandy Uni | Specialization: AI (Batch 1)
 
 ---
 
