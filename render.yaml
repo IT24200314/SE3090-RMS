@@ -11,9 +11,7 @@ services:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
       - key: ConnectionStrings__DefaultConnection
-        fromDatabase:
-          name: rms-postgres-db
-          property: connectionString
+        value: Host=ep-bitter-union-azwzwv86-pooler.c-3.ap-southeast-1.aws.neon.tech;Port=5432;Database=neondb;Username=neondb_owner;Password=npg_OGmZB17jWfJh;SSL Mode=Require;Trust Server Certificate=true;
       - key: Jwt__Key
         value: RMS_Super_Secret_Security_Key_SE3090_Assignment_Grading_2026_Key!
       - key: Jwt__Issuer
@@ -21,7 +19,7 @@ services:
       - key: Jwt__Audience
         value: RMS_Clients
       - key: AiAgent__BaseUrl
-        value: http://localhost:8000
+        value: https://rms-ai-orchestrator.onrender.com
 
   # 2. Internal LangGraph AI Microservice
   - type: web
@@ -34,11 +32,3 @@ services:
     envVars:
       - key: PORT
         value: 8000
-
-databases:
-  # 3. PostgreSQL Database
-  - name: rms-postgres-db
-    plan: free
-    region: singapore
-    databaseName: rms_db
-    user: rms_admin

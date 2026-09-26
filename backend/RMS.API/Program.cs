@@ -73,8 +73,49 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("RequireContractor", policy => policy.RequireRole(UserRole.Contractor.ToString()));
 });
 
-// Configure Database Connection: PostgreSQL with resilient local InMemory fallback
-var postgresConnectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Helper to format PostgreSQL URI (e.g., from Neon, Render, Railway) into Npgsql connection string
+static string FormatPostgresConnectionString(string raw)
+{
+    if (string.IsNullOrWhiteSpace(raw)) return raw;
+    if (raw.StartsWith("postgres://", StringComparison.OrdinalIgnoreCase) ||
+        raw.StartsWith("postgresql://", StringComparison.OrdinalIgnoreCase))
+    {
+        try
+        {
+            var uri = new Uri(raw);
+            var userInfo = uri.UserInfo.Split(':');
+            var user = userInfo.Length > 0 ? Uri.UnescapeDataString(userInfo[0]) : "";
+            var password = userInfo.Length > 1 ? Uri.UnescapeDataString(userInfo[1]) : "";
+            var host = uri.Host;
+            var port = uri.Port > 0 ? uri.Port : 5432;
+            var database = uri.AbsolutePath.TrimStart('/');
+
+            var npgsqlBuilder = new Npgsql.NpgsqlConnectionStringBuilder
+            {
+                Host = host,
+                Port = port,
+                Database = database,
+                Username = user,
+                Password = password,
+                SslMode = Npgsql.SslMode.Require,
+                TrustServerCertificate = true
+            };
+            return npgsqlBuilder.ConnectionString;
+        }
+        catch
+        {
+            return raw;
+        }
+    }
+    return raw;
+}
+
+// Configure Database Connection: PostgreSQL (Neon / Cloud / Local) with resilient InMemory fallback
+var rawConn = Environment.GetEnvironmentVariable("DATABASE_URL")
+           ?? Environment.GetEnvironmentVariable("POSTGRES_CONNECTION")
+           ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+var postgresConnectionString = FormatPostgresConnectionString(rawConn ?? "");
 bool isPostgresAvailable = false;
 
 if (!string.IsNullOrWhiteSpace(postgresConnectionString))
@@ -85,8 +126,9 @@ if (!string.IsNullOrWhiteSpace(postgresConnectionString))
         testConn.Open();
         isPostgresAvailable = true;
     }
-    catch
+    catch (Exception ex)
     {
+        Console.WriteLine($"[Postgres Connection Check Error]: {ex.GetType().Name} - {ex.Message}");
         isPostgresAvailable = false;
     }
 }
@@ -98,7 +140,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         options.UseNpgsql(postgresConnectionString, npgsqlOptions =>
         {
             npgsqlOptions.MigrationsAssembly("RMS.Infrastructure");
-            npgsqlOptions.EnableRetryOnFailure(maxRetryCount: 2, maxRetryDelay: TimeSpan.FromSeconds(2), errorCodesToAdd: null);
+            npgsqlOptions.EnableRetryOnFailure(maxRetryCount: 3, maxRetryDelay: TimeSpan.FromSeconds(3), errorCodesToAdd: null);
         });
     }
     else
@@ -230,5 +272,15 @@ app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// Cloud Health Check Endpoint (Required by Section 14)
+app.MapGet("/health", () => Results.Ok(new
+{
+    status = "Healthy",
+    timestamp = DateTime.UtcNow,
+    service = "RMS.API",
+    database = isPostgresAvailable ? "PostgreSQL (Neon Cloud Connected)" : "InMemory Store",
+    version = "1.0.0"
+}));
 
 app.Run();

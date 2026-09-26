@@ -2,7 +2,7 @@
 # Dockerfile: ASP.NET Core 10 Web API Containerization for Cloud Deployment (Render / Railway / Azure)
 # =================================================================================================
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0-preview-alpine AS build
+FROM mcr.microsoft.com/dotnet/sdk:10.0-preview AS build
 WORKDIR /src
 
 # Copy project files and restore
@@ -17,7 +17,7 @@ WORKDIR "/src/RMS.API"
 RUN dotnet publish "RMS.API.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
 # Runtime stage
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview-alpine AS final
+FROM mcr.microsoft.com/dotnet/aspnet:10.0-preview AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
