@@ -56,8 +56,8 @@ const INITIAL_PROPERTIES = [
     title: 'Havelock City Studio Apartment',
     description: 'Fully furnished studio apartment with swimming pool, gym, and clubhouse access.',
     address: '324 Havelock Road, Colombo 05',
-    monthlyRent: 95000,
-    securityDeposit: 190000,
+    monthlyRent: 110000,
+    securityDeposit: 220000,
     status: 0, // Available
     landlordId: '0b1c2d3e-4f5a-6b7c-8d9e-0f1a2b3c4d5e'
   },
@@ -66,10 +66,50 @@ const INITIAL_PROPERTIES = [
     title: 'Rajagiriya Lakeview Condo',
     description: 'Spacious 2-bedroom unit overlooking the Diyawanna lake with secure parking.',
     address: '88 Lake Drive, Rajagiriya',
-    monthlyRent: 130000,
-    securityDeposit: 260000,
+    monthlyRent: 165000,
+    securityDeposit: 330000,
     status: 2, // UnderMaintenance
     landlordId: '1c2d3e4f-5a6b-7c8d-9e0f-1a2b3c4d5e6f'
+  },
+  {
+    id: 'c5e7f2a8-9b0c-1d2e-3f4a-5b6c7d8e9f0a',
+    title: 'Kandy Royal Hills Sanctuary',
+    description: 'Scenic 3-bedroom hillside villa overlooking the Mahaweli river valley with private terrace garden.',
+    address: '45 Rajapihilla Mawatha, Kandy',
+    monthlyRent: 140000,
+    securityDeposit: 280000,
+    status: 0, // Available
+    landlordId: '2d3e4f5a-6b7c-8d9e-0f1a-2b3c4d5e6f7a'
+  },
+  {
+    id: 'd6f8a3b9-0c1d-2e3f-4a5b-6c7d8e9f0a1b',
+    title: 'Galle Fort Dutch Colonial Suite',
+    description: 'Historic restored 2-bedroom suite within the UNESCO World Heritage Galle Fort with 18-foot ceilings.',
+    address: '18 Lighthouse Street, Galle Fort',
+    monthlyRent: 210000,
+    securityDeposit: 420000,
+    status: 0, // Available
+    landlordId: '3e4f5a6b-7c8d-9e0f-1a2b-3c4d5e6f7a8b'
+  },
+  {
+    id: 'e7a9b4c0-1d2e-3f4a-5b6c-7d8e9f0a1b2c',
+    title: 'Mount Lavinia Sunset Penthouse',
+    description: 'Exclusive top-floor beachfront duplex with 360-degree ocean views and private balcony jacuzzi.',
+    address: '12 Hotel Road, Mount Lavinia',
+    monthlyRent: 195000,
+    securityDeposit: 390000,
+    status: 1, // Occupied
+    landlordId: '4f5a6b7c-8d9e-0f1a-2b3c-4d5e6f7a8b9c'
+  },
+  {
+    id: 'f8b0c5d1-2e3f-4a5b-6c7d-8e9f0a1b2c3d',
+    title: 'Nuwara Eliya Pine Valley Cottage',
+    description: 'Cozy 3-bedroom Tudor-style country residence featuring brick fireplaces and English rose garden.',
+    address: '05 Upper Lake Road, Nuwara Eliya',
+    monthlyRent: 135000,
+    securityDeposit: 270000,
+    status: 0, // Available
+    landlordId: '5a6b7c8d-9e0f-1a2b-3c4d-5e6f7a8b9c0d'
   }
 ];
 

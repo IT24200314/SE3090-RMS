@@ -11,12 +11,16 @@ import React from 'react';
 import { MapPin, FileText, XCircle, Calendar, ShieldCheck, Home, Bed, Bath, Square, Sparkles } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
-// Curated architectural photography mapped to Colombo property locations
+// Curated architectural photography mapped to Sri Lankan property locations
 const PROPERTY_PHOTOS = {
   'Oceanfront': 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
   'Cinnamon': 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
   'Havelock': 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=800&q=80',
-  'Rajagiriya': 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'
+  'Rajagiriya': 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+  'Kandy': 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=800&q=80',
+  'Galle': 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+  'Mount Lavinia': 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80',
+  'Nuwara Eliya': 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80'
 };
 
 export const PropertyCard = ({ property, onDraftLease, onTerminateLease }) => {

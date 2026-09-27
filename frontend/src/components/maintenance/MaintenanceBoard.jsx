@@ -29,61 +29,76 @@ import { maintenanceService } from '../../services/api';
 
 const INITIAL_TICKETS = [
   {
-    id: 'm1a2b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c',
+    id: 'b1a2b3c4-d5e6-7f8a-9b0c-1d2e3f4a5b6c',
     propertyId: 'e1a3b8c4-5d6e-7f8a-9b0c-1d2e3f4a5b6c',
     propertyTitle: 'Oceanfront Luxury Suite',
-    tenantId: 't1a2b3c4-d5e6-f7a8-b9c0-d1e2f3a4b5c6',
-    issueDescription: 'Major burst pipe in master bathroom causing rapid water leakage on floor.',
-    photoUrl: 'https://cdn.rms.local/photos/burst_pipe_01.jpg',
+    tenantId: '22222222-2222-2222-2222-222222222222',
+    issueDescription: 'Emergency: High-pressure burst pipe in master bathroom creating localized flooding across teak floors.',
+    photoUrl: 'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?auto=format&fit=crop&w=800&q=80',
     priority: 3, // Emergency
     status: 2, // PendingManagerApproval ( >= 50K )
     estimatedCost: 65000,
-    aiTriageSummary: "Classified under 'Plumbing Services'. Estimated budget: LKR 65,000.00. [FLAGGED] Exceeds LKR 50K ceiling. Paused at PendingManagerApproval node.",
+    aiTriageSummary: "Classified under 'Plumbing Services'. Estimated budget: LKR 65,000.00. [FLAGGED] Exceeds LKR 50K ceiling. Paused at PendingManagerApproval node for human authorization.",
     assignedContractorId: null,
     createdAtUtc: new Date().toISOString()
   },
   {
-    id: 'm2b3c4d5-e6f7-8a9b-0c1d-2e3f4a5b6c7d',
+    id: 'b2b3c4d5-e6f7-8a9b-0c1d-2e3f4a5b6c7d',
     propertyId: 'f2b4c9d5-6e7f-8a9b-0c1d-2e3f4a5b6c7d',
     propertyTitle: 'Cinnamon Gardens Townhouse',
-    tenantId: 't2b3c4d5-e6f7-a8b9-c0d1-e2f3a4b5c6d7',
-    issueDescription: 'Kitchen main power outlet sparking when high load appliance is connected.',
-    photoUrl: 'https://cdn.rms.local/photos/outlet_spark_01.jpg',
+    tenantId: '22222222-2222-2222-2222-222222222222',
+    issueDescription: 'Main distribution electrical panel sparking intermittently under heavy AC load. Potential short circuit.',
+    photoUrl: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=800&q=80',
     priority: 2, // High
     status: 0, // Unassigned / Open
-    estimatedCost: 22000,
-    aiTriageSummary: "Classified under 'Electrical Engineering'. Estimated budget: LKR 22,000.00. [APPROVED] Within auto-approval bounds.",
+    estimatedCost: 28000,
+    aiTriageSummary: "Classified under 'Electrical Engineering'. Estimated budget: LKR 28,000.00. [APPROVED] Within auto-approval bounds.",
     assignedContractorId: null,
     createdAtUtc: new Date().toISOString()
   },
   {
-    id: 'm3c4d5e6-f7a8-9b0c-1d2e-3f4a5b6c7d8e',
+    id: 'b3c4d5e6-f7a8-9b0c-1d2e-3f4a5b6c7d8e',
     propertyId: 'a3c5d0e6-7f8a-9b0c-1d2e-3f4a5b6c7d8e',
     propertyTitle: 'Havelock City Studio Apartment',
-    tenantId: 't3c4d5e6-f7a8-b9c0-d1e2-f3a4b5c6d7e8',
-    issueDescription: 'HVAC Air conditioning condenser leaking refrigerant water onto balcony.',
-    photoUrl: 'https://cdn.rms.local/photos/hvac_01.jpg',
+    tenantId: '22222222-2222-2222-2222-222222222222',
+    issueDescription: 'Master bedroom inverter air conditioning unit leaking condensed water onto drywall and rattling loudly.',
+    photoUrl: 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80',
     priority: 1, // Medium
     status: 1, // Dispatched
-    estimatedCost: 28000,
-    aiTriageSummary: "Classified under 'HVAC Services'. Lanka Cool Air dispatched.",
-    assignedContractorId: '9f8e7d6c-5b4a-3f2e-1d0c-9b8a7f6e5d4c',
-    contractorName: 'Lanka QuickPlumb Services',
+    estimatedCost: 32000,
+    aiTriageSummary: "Classified under 'HVAC Services'. Auto-triage assigned to Lanka Cool Air Services.",
+    assignedContractorId: '33333333-3333-3333-3333-333333333333',
+    contractorName: 'Lanka QuickPlumb & CoolAir',
     createdAtUtc: new Date().toISOString()
   },
   {
-    id: 'm4d5e6f7-8a9b-0c1d-2e3f-4a5b6c7d8e9f',
+    id: 'b4d5e6f7-8a9b-0c1d-2e3f-4a5b6c7d8e9f',
     propertyId: 'b4d6e1f7-8a9b-0c1d-2e3f-4a5b6c7d8e9f',
     propertyTitle: 'Rajagiriya Lakeview Condo',
-    tenantId: 't4d5e6f7-a8b9-c0d1-e2f3-a4b5c6d7e8f9',
-    issueDescription: 'Replaced main front biometric lock sensor battery and recalibrated bolt.',
-    photoUrl: 'https://cdn.rms.local/photos/lock_01.jpg',
+    tenantId: '22222222-2222-2222-2222-222222222222',
+    issueDescription: 'Front entrance biometric RFID digital lock battery depleted and keypad failed to engage deadlock mechanism.',
+    photoUrl: 'https://images.unsplash.com/photo-1558002038-1055907df827?auto=format&fit=crop&w=800&q=80',
     priority: 0, // Low
     status: 4, // Resolved
     estimatedCost: 12000,
-    aiTriageSummary: "General Handyman resolved. Invoiced settled.",
-    assignedContractorId: '6c5b4a3f-2e1d-0c9b-8a7f-6e5d4c3b2a10',
+    aiTriageSummary: "Smart Home Security repair. Replaced backup lithium cells and calibrated mortise bolt.",
+    assignedContractorId: '33333333-3333-3333-3333-333333333333',
     contractorName: 'All-Fix Handyman Crew',
+    createdAtUtc: new Date().toISOString()
+  },
+  {
+    id: 'b5e7f2a8-9b0c-1d2e-3f4a-5b6c7d8e9f0a',
+    propertyId: 'c5e7f2a8-9b0c-1d2e-3f4a-5b6c7d8e9f0a',
+    propertyTitle: 'Kandy Royal Hills Sanctuary',
+    tenantId: '22222222-2222-2222-2222-222222222222',
+    issueDescription: 'Rooftop solar water heater heating element calcified, resulting in inadequate hot water pressure during mornings.',
+    photoUrl: 'https://images.unsplash.com/photo-1509391365360-2e959784a276?auto=format&fit=crop&w=800&q=80',
+    priority: 1, // Medium
+    status: 3, // InProgress
+    estimatedCost: 42000,
+    aiTriageSummary: "Solar Thermal plumbing maintenance. Replacement copper elements dispatched with contractor on-site.",
+    assignedContractorId: '33333333-3333-3333-3333-333333333333',
+    contractorName: 'Highland Solar & Electricals',
     createdAtUtc: new Date().toISOString()
   }
 ];
@@ -405,6 +420,19 @@ export const MaintenanceBoard = () => {
                     {ticket.issueDescription}
                   </h5>
 
+                  {ticket.photoUrl && ticket.photoUrl.startsWith('http') && (
+                    <div className="relative h-28 w-full rounded-lg overflow-hidden my-2 border border-slate-200 dark:border-slate-800 bg-slate-900 group">
+                      <img 
+                        src={ticket.photoUrl} 
+                        alt="Defect Evidence" 
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/70 backdrop-blur-xs text-[9px] text-white flex items-center gap-1 font-mono">
+                        <span>Defect Photo Evidence</span>
+                      </div>
+                    </div>
+                  )}
+
                   <p className={`text-[11px] font-mono mb-2 ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
                     Est: <strong className="text-emerald-600">LKR {Number(ticket.estimatedCost).toLocaleString()}</strong>
                   </p>
@@ -486,6 +514,16 @@ export const MaintenanceBoard = () => {
                 <h5 className={`text-xs font-semibold leading-snug ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
                   {ticket.issueDescription}
                 </h5>
+
+                {ticket.photoUrl && ticket.photoUrl.startsWith('http') && (
+                  <div className="relative h-24 w-full rounded-lg overflow-hidden my-1.5 border border-slate-200 dark:border-slate-800 bg-slate-900 group">
+                    <img 
+                      src={ticket.photoUrl} 
+                      alt="Defect Evidence" 
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
 
                 <div className={`p-2 rounded-lg border text-[11px] ${
                   isLight ? 'bg-slate-50 border-slate-200' : 'bg-slate-900 border-slate-800'
