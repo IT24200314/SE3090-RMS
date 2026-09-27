@@ -20,7 +20,10 @@ import {
   Sun,
   Moon,
   ShieldCheck,
-  Plus
+  Plus,
+  LogOut,
+  User,
+  Wrench
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 
@@ -31,7 +34,9 @@ export const Header = ({
   selectedPropertyFilter,
   workspaceMode = 'manager',
   onToggleWorkspaceMode,
-  onOpenAddProperty
+  onOpenAddProperty,
+  user,
+  onLogout
 }) => {
   const { theme, toggleTheme } = useTheme();
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -274,6 +279,35 @@ export const Header = ({
         >
           {isLight ? <Moon className="w-4 h-4 text-slate-600" /> : <Sun className="w-4 h-4 text-amber-400" />}
         </button>
+
+        {/* User Session & Sign Out */}
+        {user && (
+          <div className="flex items-center gap-2 pl-2 border-l border-slate-200 dark:border-slate-800">
+            <div className="hidden sm:flex flex-col text-right">
+              <span className={`text-[11px] font-bold leading-tight max-w-[120px] truncate ${
+                isLight ? 'text-slate-800' : 'text-slate-200'
+              }`}>
+                {user.fullName || user.email?.split('@')[0]}
+              </span>
+              <span className="text-[9px] font-semibold text-blue-500 uppercase tracking-wider">
+                {user.role || 'User'}
+              </span>
+            </div>
+
+            <button
+              onClick={onLogout}
+              title="Sign Out of Session"
+              className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg border text-xs font-semibold transition-all cursor-pointer ${
+                isLight 
+                  ? 'bg-red-50 hover:bg-red-100 border-red-200 text-red-700' 
+                  : 'bg-red-500/10 hover:bg-red-500/20 border-red-500/20 text-red-400'
+              }`}
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden md:inline">Sign Out</span>
+            </button>
+          </div>
+        )}
       </div>
     </header>
   );
