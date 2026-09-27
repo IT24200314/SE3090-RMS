@@ -56,6 +56,24 @@ def add_styled_heading(doc, text, level):
         h.paragraph_format.space_after = Pt(4)
     return h
 
+def add_figure_with_caption(doc, image_path, caption_text, width_inches=6.2):
+    """Inserts a high-resolution figure with centered alignment and italicized caption."""
+    if os.path.exists(image_path):
+        p_img = doc.add_paragraph()
+        p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p_img.paragraph_format.space_before = Pt(8)
+        p_img.paragraph_format.space_after = Pt(2)
+        p_img.add_run().add_picture(image_path, width=Inches(width_inches))
+        
+        p_cap = doc.add_paragraph()
+        p_cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p_cap.paragraph_format.space_after = Pt(10)
+        r_cap = p_cap.add_run(caption_text)
+        r_cap.font.name = 'Arial'
+        r_cap.font.size = Pt(8.5)
+        r_cap.font.italic = True
+        r_cap.font.color.rgb = RGBColor(71, 85, 105)
+
 def add_body_paragraph(doc, text="", bold_prefix=None, italic=False):
     """Adds a body paragraph with standard font formatting."""
     p = doc.add_paragraph()
@@ -269,34 +287,18 @@ def main():
         "Neither the React frontend nor the Flutter mobile application is ever permitted to communicate directly with the AI orchestrator, ensuring an impenetrable architectural boundary."
     )
     
-    arch_ascii = (
-        "+---------------------------------------------------------------------------------------+\n"
-        "|                                     CLIENT LAYER                                      |\n"
-        "|   [ React 19 Admin Portal ] (Vercel Live)       [ Flutter Mobile App ] (Android APK)  |\n"
-        "|   - Manager Dashboard & HITL Approvals          - Camera KYC & GPS Maintenance Tag    |\n"
-        "+------------------------------------------+--------------------------------------------+\n"
-        "                                           | HTTPS / JSON (JWT Bearer Auth)\n"
-        "                                           v\n"
-        "+---------------------------------------------------------------------------------------+\n"
-        "|                            ASP.NET CORE 10 WEB API (Render Live)                      |\n"
-        "|   +-------------------------------------------------------------------------------+   |\n"
-        "|   | Controllers: Auth, Properties, Leases, TenantScreening, Maintenance, Audit    |   |\n"
-        "|   +-------------------------------------------------------------------------------+   |\n"
-        "|   | Services Layer: Clean Architecture Business Logic & Policy Enforcement        |   |\n"
-        "|   +-------------------------------------------------------------------------------+   |\n"
-        "|   | Infrastructure: EF Core 10 / Npgsql Relational Mapping & Transactions         |   |\n"
-        "+-------------------+-----------------------------------------------+-------------------+\n"
-        "                    | SQL (Npgsql / SSL)                            | Internal HTTP Call\n"
-        "                    v                                               v\n"
-        "+---------------------------------------+   +-------------------------------------------+\n"
-        "|  POSTGRESQL DATABASE (Neon Cloud)     |   |   INTERNAL AGENTIC AI (LangGraph/FastAPI) |\n"
-        "|  - Users, Properties, Leases          |   |   - Planning & Delegation Node (Upamada)  |\n"
-        "|  - TenantApplications, Tickets        |   |   - Risk Scoring & KYC Node (Widumini)    |\n"
-        "|  - AuditLogs, Relational FKs          |   |   - Maintenance Triage Node (Hashini)     |\n"
-        "|  - UTC Timestamps & Unique Indexes    |   |   - Deterministic Guardrails & HITL Gates |\n"
-        "+---------------------------------------+   +-------------------------------------------+"
+    # Embed High-Resolution System Architecture Diagram
+    add_figure_with_caption(doc, "docs/figures/system_architecture.png", 
+                            "Figure 1: Rental Management System (RMS) - Integrated Full-Stack System Architecture")
+
+    add_styled_heading(doc, "2.1 Clean Architecture & Design Patterns", level=3)
+    add_body_paragraph(doc,
+        "The backend is structured into four distinct layers in accordance with Clean Architecture principles:\n"
+        "• RMS.Core (Domain Layer): Contains enterprise business entities (User, Property, Lease, TenantApplication, MaintenanceTicket, AuditLog), domain enums, and repository/service interfaces. This layer has zero external dependencies.\n"
+        "• RMS.Infrastructure (Data & Integration Layer): Houses Entity Framework Core 10 DbContext, Npgsql PostgreSQL provider configurations, database migrations, cryptographic PBKDF2 password hashing helpers, and external API client adapters.\n"
+        "• RMS.API (Presentation Layer): Exposes RESTful controllers, DTO mapping validators, JWT Bearer authentication middleware, global exception handling, and cloud health monitoring probes.\n"
+        "• ai-agent (AI Microservice Layer): Autonomous Python LangGraph orchestrator providing stateful multi-agent execution, tool allow-listing, and deterministic validation."
     )
-    add_code_block(doc, arch_ascii)
     
     # 3. Database Design
     add_styled_heading(doc, "3. Relational Database Design & PostgreSQL Schema", level=2)
@@ -306,6 +308,10 @@ def main():
         "to prevent orphan records, and automated UTC audit timestamps (CreatedAtUtc, UpdatedAtUtc)."
     )
     
+    # Embed High-Resolution Database ERD Diagram
+    add_figure_with_caption(doc, "docs/figures/database_erd.png",
+                            "Figure 2: PostgreSQL Relational Database Schema & Entity-Relationship Diagram (3NF)")
+    
     db_schema_data = [
         ["Users", "Id (PK, UUID), FullName (VARCHAR 100), Email (VARCHAR 150, UNIQUE), PasswordHash (TEXT, PBKDF2), PhoneNumber (VARCHAR 20), Role (INT, Enum), CreatedAtUtc (TIMESTAMPTZ)"],
         ["Properties", "Id (PK, UUID), Title (VARCHAR 200, INDEXED), Description (TEXT), Address (VARCHAR 300), MonthlyRent (DECIMAL 18,2), SecurityDeposit (DECIMAL 18,2), Status (INT), LandlordId (FK -> Users.Id)"],
@@ -314,6 +320,15 @@ def main():
         ["AuditLogs", "Id (PK, UUID), EntityName (VARCHAR 100), EntityId (VARCHAR 100), Action (VARCHAR 50), PerformedBy (VARCHAR 100), TimestampUtc (TIMESTAMPTZ), Details (TEXT)"]
     ]
     add_custom_table(doc, ["Table Name", "Column Definitions, Foreign Keys & Storage Constraints"], db_schema_data, [1.8, 4.7])
+    
+    add_styled_heading(doc, "3.1 PostgreSQL Indexing & Optimization Strategy", level=3)
+    add_body_paragraph(doc,
+        "To guarantee sub-50ms query response times under high concurrency, targeted B-tree indexes were configured:\n"
+        "• IX_Properties_Title: Facilitates instant prefix and substring search on property listings without triggering full table scans.\n"
+        "• IX_TenantApplications_Status: Accelerates manager queue filtering for PendingReview applications.\n"
+        "• IX_Users_Email (UNIQUE): Enforces email uniqueness at the storage engine level, preventing race conditions during registration.\n"
+        "• UTC Audit Compliance: All timestamps utilize PostgreSQL 'TIMESTAMPTZ' (timestamp with time zone) to eliminate daylight saving ambiguities."
+    )
     
     # 4. RESTful API Architecture
     add_styled_heading(doc, "4. RESTful API Architecture & Security", level=2)
@@ -370,7 +385,17 @@ def main():
         "Pydantic-enforced structured schema validation, and programmatic guardrails that cannot be overridden by conversational prompt injections."
     )
     
-    add_styled_heading(doc, "7.1 Multi-Agent StateGraph Topology", level=3)
+    # Embed High-Resolution StateGraph Diagram
+    add_figure_with_caption(doc, "docs/figures/langgraph_stategraph.png",
+                            "Figure 3: LangGraph Agentic AI Multi-Agent StateGraph & Deterministic Guardrail Flow")
+    
+    add_styled_heading(doc, "7.1 Multi-Agent StateGraph Topology & Guardrail Formulas", level=3)
+    add_body_paragraph(doc,
+        "The StateGraph enforces strict mathematical and operational invariants:\n"
+        "• Debt-to-Income (DTI) Threshold Invariant: DTI = (MonthlyRent / MonthlyIncome) * 100. If DTI > 35.0%, the applicant is flagged as elevated risk and requires manual review.\n"
+        "• Statutory Spending Invariant: If EstimatedRepairCost >= LKR 50,000.00, the autonomous agent is prohibited from auto-dispatching a contractor. The execution graph yields control, transitioning the state to 'PendingManagerApproval'."
+    )
+    
     ai_nodes_data = [
         ["1. Planning Node (Upamada)", "Deconstructs complex user prompts or entity requests into a deterministic 4-step execution plan: [Classify, Verify, Estimate, Authorize]."],
         ["2. Risk Scoring Node (Widumini)", "Evaluates tenant credit profile and debt-to-income (DTI) ratio; flags applicants with DTI > 35% for human review."],
@@ -385,6 +410,11 @@ def main():
     add_body_paragraph(doc,
         "The system executes a seamless cross-platform workflow demonstrating full integration between Flutter, ASP.NET Core, PostgreSQL, LangGraph AI, and React:"
     )
+    
+    # Embed High-Resolution Sequence Diagram
+    add_figure_with_caption(doc, "docs/figures/hitl_sequence_diagram.png",
+                            "Figure 4: Cross-Platform Human-in-the-Loop (HITL) Workflow Sequence Trace")
+    
     e2e_steps_data = [
         ["Step 1", "Flutter Mobile (Tenant)", "Tenant logs emergency repair ('Burst water main flooding kitchen') with camera photo and GPS coordinates."],
         ["Step 2", "ASP.NET Core Web API", "Validates JWT, sanitizes GPS payload, and creates Ticket in PostgreSQL with Status: Open."],
@@ -408,6 +438,10 @@ def main():
         "React frontend user flows, and Flutter mobile hardware interactions. In total, 25 xUnit automated tests, 17 Pytest agent tests, "
         "and multi-platform validation suites were executed with a 100% pass rate."
     )
+    
+    # Embed High-Resolution Test Pyramid Figure
+    add_figure_with_caption(doc, "docs/figures/testing_pyramid.png",
+                            "Figure 5: Automated Testing Coverage Pyramid & Suite Distribution (100% Pass Rate)")
     
     test_summary_data = [
         ["Backend REST API (.NET 10 xUnit)", "RMS.Tests / AuthControllerTests", "JWT token generation, PBKDF2 hashing, 401 Unauthorized, 409 Conflict, Role claims", "8", "8 Passed", "0 Failed"],
@@ -468,6 +502,10 @@ def main():
         "Performance testing was conducted using the automated benchmarking harness (scripts/performance_benchmark.py) simulating 50 concurrent virtual users "
         "executing randomized read, write, and authentication operations against the system."
     )
+    
+    # Embed High-Resolution Performance Benchmarks Chart
+    add_figure_with_caption(doc, "docs/figures/performance_benchmarks.png",
+                            "Figure 6: Concurrent Multi-User Latency Benchmarks & Request Success Breakdown")
     
     perf_data = [
         ["Database Read (Properties Query)", "50 Concurrent Requests", "18.4 ms", "24.6 ms", "12.1 ms", "100.0%", "PASS (Sub-50ms target)"],
