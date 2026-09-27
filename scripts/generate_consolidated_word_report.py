@@ -7,6 +7,7 @@ Purpose: Generates the official SLIIT SE3090 Assignment 1 Consolidated Report us
          full Group Technical Report, Software Testing Report, Agentic AI Evaluation, Performance
          Benchmark, Cloud Deployment Report (Live URLs), 5 ADRs, and 3 Individual Student Reports.
 Group ID: SEF_KDY_AI_04 | SLIIT Kandy Uni | AI Specialization (Batch 1)
+Design & Typography Standard: Professional Academic Standard (Calibri / Deep Navy #1E3A8A / Slate)
 =================================================================================================
 """
 
@@ -15,7 +16,7 @@ import sys
 import docx
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.table import WD_TABLE_ALIGNMENT, WD_ALIGN_VERTICAL
+from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml import parse_xml, OxmlElement
 from docx.oxml.ns import nsdecls, qn
 
@@ -32,76 +33,76 @@ def set_cell_margins(cell, top=100, bottom=100, left=150, right=150):
     tcPr.append(tcMar)
 
 def add_styled_heading(doc, text, level):
-    """Adds a heading with consistent styling and colors."""
+    """Adds a heading with consistent professional styling and corporate colors."""
     h = doc.add_heading(text, level=level)
     run = h.runs[0] if h.runs else h.add_run()
-    run.font.name = 'Arial'
+    run.font.name = 'Calibri'
     if level == 1:
         run.font.size = Pt(17)
         run.font.bold = True
-        run.font.color.rgb = RGBColor(24, 43, 73) # Deep Navy
+        run.font.color.rgb = RGBColor(30, 58, 138) # Deep Navy (#1E3A8A)
         h.paragraph_format.space_before = Pt(18)
         h.paragraph_format.space_after = Pt(8)
     elif level == 2:
         run.font.size = Pt(13.5)
         run.font.bold = True
-        run.font.color.rgb = RGBColor(30, 64, 175) # Royal Blue
+        run.font.color.rgb = RGBColor(37, 99, 235) # Royal Blue (#2563EB)
         h.paragraph_format.space_before = Pt(14)
         h.paragraph_format.space_after = Pt(6)
     elif level == 3:
         run.font.size = Pt(11.5)
         run.font.bold = True
-        run.font.color.rgb = RGBColor(51, 65, 85) # Slate
+        run.font.color.rgb = RGBColor(51, 65, 85) # Slate (#334155)
         h.paragraph_format.space_before = Pt(10)
         h.paragraph_format.space_after = Pt(4)
     return h
 
 def add_figure_with_caption(doc, image_path, caption_text, width_inches=6.2):
-    """Inserts a high-resolution figure with centered alignment and italicized caption."""
+    """Inserts a high-resolution figure with centered alignment, padding, and italicized caption."""
     if os.path.exists(image_path):
         p_img = doc.add_paragraph()
         p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_img.paragraph_format.space_before = Pt(8)
-        p_img.paragraph_format.space_after = Pt(2)
+        p_img.paragraph_format.space_before = Pt(10)
+        p_img.paragraph_format.space_after = Pt(3)
         p_img.add_run().add_picture(image_path, width=Inches(width_inches))
         
         p_cap = doc.add_paragraph()
         p_cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p_cap.paragraph_format.space_after = Pt(10)
+        p_cap.paragraph_format.space_after = Pt(12)
         r_cap = p_cap.add_run(caption_text)
-        r_cap.font.name = 'Arial'
-        r_cap.font.size = Pt(8.5)
+        r_cap.font.name = 'Calibri'
+        r_cap.font.size = Pt(9)
         r_cap.font.italic = True
         r_cap.font.color.rgb = RGBColor(71, 85, 105)
 
 def add_body_paragraph(doc, text="", bold_prefix=None, italic=False):
-    """Adds a body paragraph with standard font formatting."""
+    """Adds a body paragraph with standard Calibri font formatting."""
     p = doc.add_paragraph()
-    p.paragraph_format.space_after = Pt(5)
+    p.paragraph_format.space_after = Pt(6)
     p.paragraph_format.line_spacing = 1.15
     if bold_prefix:
         r_prefix = p.add_run(bold_prefix)
-        r_prefix.font.name = 'Arial'
-        r_prefix.font.size = Pt(10)
+        r_prefix.font.name = 'Calibri'
+        r_prefix.font.size = Pt(10.5)
         r_prefix.font.bold = True
         r_prefix.font.color.rgb = RGBColor(15, 23, 42)
     if text:
         r_text = p.add_run(text)
-        r_text.font.name = 'Arial'
-        r_text.font.size = Pt(10)
+        r_text.font.name = 'Calibri'
+        r_text.font.size = Pt(10.5)
         r_text.font.italic = italic
         r_text.font.color.rgb = RGBColor(30, 41, 59)
     return p
 
 def add_callout_box(doc, text, title=""):
-    """Adds an indented callout / note box with background shading."""
+    """Adds an indented callout / note box with professional border and shading."""
     tbl = doc.add_table(rows=1, cols=1)
     tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
     cell = tbl.cell(0, 0)
-    set_cell_background(cell, "F1F5F9")
+    set_cell_background(cell, "F8FAFC") # Soft Slate
     set_cell_margins(cell, top=140, bottom=140, left=200, right=200)
     
-    # Left border highlight
+    # Left border highlight (Royal Blue)
     tcPr = cell._element.get_or_add_tcPr()
     borders = parse_xml(f'<w:tcBorders {nsdecls("w")}><w:left w:val="single" w:sz="24" w:space="0" w:color="2563EB"/><w:top w:val="none"/><w:right w:val="none"/><w:bottom w:val="none"/></w:tcBorders>')
     tcPr.append(borders)
@@ -110,18 +111,18 @@ def add_callout_box(doc, text, title=""):
     p.paragraph_format.space_after = Pt(2)
     if title:
         r_t = p.add_run(f"{title}\n")
-        r_t.font.name = 'Arial'
-        r_t.font.size = Pt(9.5)
+        r_t.font.name = 'Calibri'
+        r_t.font.size = Pt(10)
         r_t.font.bold = True
-        r_t.font.color.rgb = RGBColor(30, 64, 175)
+        r_t.font.color.rgb = RGBColor(30, 58, 138)
     r_body = p.add_run(text)
-    r_body.font.name = 'Arial'
-    r_body.font.size = Pt(9.5)
+    r_body.font.name = 'Calibri'
+    r_body.font.size = Pt(10)
     r_body.font.color.rgb = RGBColor(30, 41, 59)
     doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
 def add_code_block(doc, code_text):
-    """Adds a code snippet / terminal block with Courier font and shaded background."""
+    """Adds a code snippet / terminal block with Courier/Consolas font and shaded background."""
     tbl = doc.add_table(rows=1, cols=1)
     tbl.alignment = WD_TABLE_ALIGNMENT.CENTER
     cell = tbl.cell(0, 0)
@@ -138,7 +139,7 @@ def add_code_block(doc, code_text):
     doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
 def add_custom_table(doc, headers, data_rows, col_widths=None):
-    """Builds a formatted table with shaded header row and borders."""
+    """Builds a formatted table with shaded header row, subtle borders, and padding."""
     table = doc.add_table(rows=len(data_rows) + 1, cols=len(headers))
     table.alignment = WD_TABLE_ALIGNMENT.CENTER
     
@@ -146,13 +147,13 @@ def add_custom_table(doc, headers, data_rows, col_widths=None):
     hdr_cells = table.rows[0].cells
     for i, title in enumerate(headers):
         hdr_cells[i].text = title
-        set_cell_background(hdr_cells[i], "1E293B") # Dark slate header
+        set_cell_background(hdr_cells[i], "1E3A8A") # Deep Navy
         set_cell_margins(hdr_cells[i], top=120, bottom=120, left=140, right=140)
         p = hdr_cells[i].paragraphs[0]
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
         for run in p.runs:
-            run.font.name = 'Arial'
-            run.font.size = Pt(9)
+            run.font.name = 'Calibri'
+            run.font.size = Pt(9.5)
             run.font.bold = True
             run.font.color.rgb = RGBColor(255, 255, 255)
             
@@ -163,13 +164,13 @@ def add_custom_table(doc, headers, data_rows, col_widths=None):
         for c_idx, val in enumerate(row_data):
             row_cells[c_idx].text = str(val)
             set_cell_background(row_cells[c_idx], bg_color)
-            set_cell_margins(row_cells[c_idx], top=80, bottom=80, left=120, right=120)
+            set_cell_margins(row_cells[c_idx], top=90, bottom=90, left=120, right=120)
             p = row_cells[c_idx].paragraphs[0]
             p.paragraph_format.space_after = Pt(0)
             p.paragraph_format.line_spacing = 1.05
             for run in p.runs:
-                run.font.name = 'Arial'
-                run.font.size = Pt(8.5)
+                run.font.name = 'Calibri'
+                run.font.size = Pt(9)
                 run.font.color.rgb = RGBColor(30, 41, 59)
                 
     # Column widths if supplied
@@ -181,11 +182,112 @@ def add_custom_table(doc, headers, data_rows, col_widths=None):
     # Apply soft borders
     tblPr = table._element.xpath('w:tblPr')
     if tblPr:
-        borders = parse_xml(f'<w:tblBorders {nsdecls("w")}><w:top w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/><w:bottom w:val="single" w:sz="4" w:space="0" w:color="CBD5E1"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/><w:insideV w:val="none"/><w:left w:val="none"/><w:right w:val="none"/></w:tblBorders>')
+        borders = parse_xml(f'<w:tblBorders {nsdecls("w")}><w:top w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/><w:bottom w:val="single" w:sz="6" w:space="0" w:color="CBD5E1"/><w:insideH w:val="single" w:sz="4" w:space="0" w:color="E2E8F0"/><w:insideV w:val="none"/><w:left w:val="none"/><w:right w:val="none"/></w:tblBorders>')
         tblPr[0].append(borders)
         
     doc.add_paragraph().paragraph_format.space_after = Pt(6)
     return table
+
+def polish_cover_page(doc):
+    """Polishes typography and table styling on the official cover page template."""
+    for p in doc.paragraphs[:12]:
+        for r in p.runs:
+            r.font.name = 'Calibri'
+            if 'Sri Lanka Institute' in p.text:
+                r.font.size = Pt(15)
+                r.font.bold = True
+                r.font.color.rgb = RGBColor(15, 23, 42)
+            elif 'SE3090' in p.text:
+                r.font.size = Pt(14)
+                r.font.bold = True
+                r.font.color.rgb = RGBColor(30, 58, 138)
+            elif 'Final Submission' in p.text:
+                r.font.size = Pt(13)
+                r.font.bold = True
+                r.font.color.rgb = RGBColor(51, 65, 85)
+
+    # Table 0: Student details table
+    if len(doc.tables) >= 2:
+        t0 = doc.tables[0]
+        t0.alignment = WD_TABLE_ALIGNMENT.CENTER
+        for cell in t0.rows[0].cells:
+            set_cell_background(cell, "1E3A8A")
+            set_cell_margins(cell, top=100, bottom=100, left=140, right=140)
+            for p in cell.paragraphs:
+                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+                for r in p.runs:
+                    r.font.name = "Calibri"
+                    r.font.size = Pt(10)
+                    r.font.bold = True
+                    r.font.color.rgb = RGBColor(255, 255, 255)
+        for row in t0.rows[1:]:
+            for cell in row.cells:
+                set_cell_margins(cell, top=90, bottom=90, left=140, right=140)
+                for p in cell.paragraphs:
+                    for r in p.runs:
+                        r.font.name = "Calibri"
+                        r.font.size = Pt(9.5)
+                        r.font.color.rgb = RGBColor(30, 41, 59)
+
+        # Table 1: Group details table
+        t1 = doc.tables[1]
+        t1.alignment = WD_TABLE_ALIGNMENT.CENTER
+        for row in t1.rows:
+            set_cell_background(row.cells[0], "F1F5F9")
+            for cell in row.cells:
+                set_cell_margins(cell, top=90, bottom=90, left=140, right=140)
+                for p in cell.paragraphs:
+                    for r in p.runs:
+                        r.font.name = "Calibri"
+                        r.font.size = Pt(9.5)
+                        r.font.color.rgb = RGBColor(30, 41, 59)
+
+def setup_headers_and_footers(doc):
+    """Configures running header, footer, and dynamic Word page numbering."""
+    section = doc.sections[0]
+    section.different_first_page_header_footer = True
+    
+    # 1-inch margins
+    section.top_margin = Inches(1.0)
+    section.bottom_margin = Inches(1.0)
+    section.left_margin = Inches(1.0)
+    section.right_margin = Inches(1.0)
+    
+    # Running Header
+    header = section.header
+    hp = header.paragraphs[0]
+    hp.text = ""
+    hp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    hr1 = hp.add_run("SLIIT — SE3090: Software Engineering Frameworks  |  Rental Management System (RMS)")
+    hr1.font.name = 'Calibri'
+    hr1.font.size = Pt(8.5)
+    hr1.font.color.rgb = RGBColor(100, 116, 139)
+    
+    # Running Footer with native Word Page Field
+    footer = section.footer
+    fp = footer.paragraphs[0]
+    fp.text = ""
+    fp.alignment = WD_ALIGN_PARAGRAPH.RIGHT
+    
+    fr_left = fp.add_run("Group ID: SEF_KDY_AI_04  |  SLIIT Kandy Uni (AI Batch 1)                                                Page ")
+    fr_left.font.name = 'Calibri'
+    fr_left.font.size = Pt(8.5)
+    fr_left.font.color.rgb = RGBColor(100, 116, 139)
+    
+    # Add native dynamic Word page number
+    fldChar1 = parse_xml(r'<w:fldChar %s w:fldCharType="begin"/>' % nsdecls('w'))
+    instrText = parse_xml(r'<w:instrText %s xml:space="preserve"> PAGE </w:instrText>' % nsdecls('w'))
+    fldChar2 = parse_xml(r'<w:fldChar %s w:fldCharType="separate"/>' % nsdecls('w'))
+    fldChar3 = parse_xml(r'<w:fldChar %s w:fldCharType="end"/>' % nsdecls('w'))
+    run_pg = fp.add_run()
+    run_pg.font.name = 'Calibri'
+    run_pg.font.size = Pt(8.5)
+    run_pg.font.bold = True
+    run_pg.font.color.rgb = RGBColor(100, 116, 139)
+    run_pg._r.append(fldChar1)
+    run_pg._r.append(instrText)
+    run_pg._r.append(fldChar2)
+    run_pg._r.append(fldChar3)
 
 def main():
     template_path = "SEF GROUP TEMPLATE.docx"
@@ -194,6 +296,10 @@ def main():
     print(f"Loading official base template from: {template_path}")
     doc = docx.Document(template_path)
     
+    # Polish cover page fonts and tables
+    polish_cover_page(doc)
+    setup_headers_and_footers(doc)
+    
     # Page break after cover page
     doc.add_page_break()
     
@@ -201,13 +307,13 @@ def main():
     p_title = doc.add_paragraph()
     p_title.alignment = WD_ALIGN_PARAGRAPH.CENTER
     r_t = p_title.add_run("RENTAL MANAGEMENT SYSTEM (RMS)\n")
-    r_t.font.name = 'Arial'
-    r_t.font.size = Pt(20)
+    r_t.font.name = 'Calibri'
+    r_t.font.size = Pt(21)
     r_t.font.bold = True
-    r_t.font.color.rgb = RGBColor(15, 23, 42)
+    r_t.font.color.rgb = RGBColor(30, 58, 138)
     
     r_sub = p_title.add_run("Integrated Full-Stack Architecture, LangGraph Multi-Agent AI Orchestration,\nTesting Matrices, Performance Evaluation, and Cloud Deployment Report")
-    r_sub.font.name = 'Arial'
+    r_sub.font.name = 'Calibri'
     r_sub.font.size = Pt(11)
     r_sub.font.color.rgb = RGBColor(71, 85, 105)
     doc.add_paragraph().paragraph_format.space_after = Pt(10)
@@ -233,18 +339,18 @@ def main():
         ["3. Relational Database Design & PostgreSQL Schema", "Part I: Group Technical Report", "Page 7"],
         ["4. RESTful API Architecture & Role-Based Access Control", "Part I: Group Technical Report", "Page 10"],
         ["5. React 19 Admin Dashboard Web Architecture", "Part I: Group Technical Report", "Page 13"],
-        ["6. Flutter Mobile Architecture & Native Hardware Workflows", "Part I: Group Technical Report", "Page 16"],
-        ["7. Agentic AI LangGraph Orchestration & Deterministic Guardrails", "Part I: Group Technical Report", "Page 19"],
-        ["8. End-to-End Cross-Platform Human-in-the-Loop Trace", "Part I: Group Technical Report", "Page 23"],
-        ["9. Comprehensive Software Testing Report (25 xUnit + Mobile + React)", "Part II: Testing Report", "Page 25"],
-        ["10. Agentic AI Evaluation Report & 5 Golden Test Cases", "Part III: AI Evaluation", "Page 31"],
-        ["11. System Performance & Concurrent Load Benchmark Report", "Part IV: Performance Report", "Page 36"],
-        ["12. Cloud Deployment & CI/CD DevOps Pipeline Report", "Part V: Deployment Report", "Page 39"],
-        ["13. Architecture Decision Records (ADRs 01 - 05)", "Part VI: ADRs", "Page 42"],
-        ["14. Security, Identity Governance & Ethical AI Declarations", "Part VII: Governance", "Page 47"],
-        ["15. Individual Technical Report: E.M.U.I.B. Ekanayake (IT24200314)", "Part VIII: Individual", "Page 50"],
-        ["16. Individual Technical Report: D.G.N.S. Widumini (IT24101176)", "Part VIII: Individual", "Page 56"],
-        ["17. Individual Technical Report: H.A. Wickramathilaka (IT24100427)", "Part VIII: Individual", "Page 62"]
+        ["6. Flutter Mobile Architecture & Native Hardware Workflows", "Part I: Group Technical Report", "Page 15"],
+        ["7. Agentic AI LangGraph Orchestration & Deterministic Guardrails", "Part I: Group Technical Report", "Page 17"],
+        ["8. End-to-End Cross-Platform Human-in-the-Loop Trace", "Part I: Group Technical Report", "Page 20"],
+        ["9. Comprehensive Software Testing Report (25 xUnit + Mobile + React)", "Part II: Testing Report", "Page 22"],
+        ["10. Agentic AI Evaluation Report & 5 Golden Test Cases", "Part III: AI Evaluation", "Page 26"],
+        ["11. System Performance & Concurrent Load Benchmark Report", "Part IV: Performance Report", "Page 29"],
+        ["12. Cloud Deployment & CI/CD DevOps Pipeline Report", "Part V: Deployment Report", "Page 31"],
+        ["13. Architecture Decision Records (ADRs 01 - 05)", "Part VI: ADRs", "Page 33"],
+        ["14. Security, Identity Governance & Ethical AI Declarations", "Part VII: Governance", "Page 37"],
+        ["15. Individual Technical Report: E.M.U.I.B. Ekanayake (IT24200314)", "Part VIII: Individual", "Page 39"],
+        ["16. Individual Technical Report: D.G.N.S. Widumini (IT24101176)", "Part VIII: Individual", "Page 43"],
+        ["17. Individual Technical Report: H.A. Wickramathilaka (IT24100427)", "Part VIII: Individual", "Page 47"]
     ]
     add_custom_table(doc, ["Section Name", "Report Domain", "Document Page"], toc_data, [3.2, 2.3, 1.0])
     
@@ -291,7 +397,7 @@ def main():
     add_figure_with_caption(doc, "docs/figures/system_architecture.png", 
                             "Figure 1: Rental Management System (RMS) - Integrated Full-Stack System Architecture")
 
-    add_styled_heading(doc, "2.1 Clean Architecture & Design Patterns", level=3)
+    add_styled_heading(doc, "2.1 Clean Architecture & Layered Boundary Rules", level=3)
     add_body_paragraph(doc,
         "The backend is structured into four distinct layers in accordance with Clean Architecture principles:\n"
         "• RMS.Core (Domain Layer): Contains enterprise business entities (User, Property, Lease, TenantApplication, MaintenanceTicket, AuditLog), domain enums, and repository/service interfaces. This layer has zero external dependencies.\n"
@@ -752,7 +858,7 @@ def main():
         "and issued purchase orders regardless of the estimated repair cost, completely bypassing our system's mandatory LKR 50,000 financial ceiling.\n\n"
         "This demonstrated to me the indispensable necessity of defensive engineering. I implemented rigid deterministic checks in Python and C# that act as "
         "uncompromising gatekeepers. Even if an AI agent suggests immediate contractor dispatch, the backend rejects the action if the cost threshold is exceeded. "
-        "ThisPair programming with AI taught me that engineers must maintain absolute ownership of system boundaries, business rules, and safety-critical constraints."
+        "This pair programming with AI taught me that engineers must maintain absolute ownership of system boundaries, business rules, and safety-critical constraints."
     )
     
     add_styled_heading(doc, "5. Signed Declaration", level=3)
@@ -762,7 +868,7 @@ def main():
     # Save the consolidated Word document
     print(f"Saving consolidated Word document to: {output_docx}")
     doc.save(output_docx)
-    print("Document successfully created!")
+    print("Document successfully created with polished typography, headers, footers, and diagrams!")
 
 if __name__ == '__main__':
     main()
