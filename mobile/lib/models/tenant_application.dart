@@ -9,6 +9,7 @@
 class TenantApplication {
   final String id;
   final String tenantId;
+  final String applicantName;
   final String propertyId;
   final double monthlyIncome;
   final String identityDocUrl;
@@ -17,9 +18,13 @@ class TenantApplication {
   final String? aiScreeningNotes;
   final DateTime createdAtUtc;
 
+  double get declaredMonthlyIncome => monthlyIncome;
+  int get creditRiskScore => aiRiskScore;
+
   TenantApplication({
     required this.id,
     required this.tenantId,
+    this.applicantName = 'Prospective Tenant',
     required this.propertyId,
     required this.monthlyIncome,
     required this.identityDocUrl,
@@ -33,13 +38,14 @@ class TenantApplication {
     return TenantApplication(
       id: json['id'] ?? '',
       tenantId: json['tenantId'] ?? '',
+      applicantName: json['applicantName'] ?? json['tenantName'] ?? 'Prospective Tenant',
       propertyId: json['propertyId'] ?? '',
-      monthlyIncome: (json['monthlyIncome'] as num?)?.toDouble() ?? 0.0,
-      identityDocUrl: json['identityDocUrl'] ?? '',
+      monthlyIncome: (json['monthlyIncome'] ?? json['declaredMonthlyIncome'] as num?)?.toDouble() ?? 0.0,
+      identityDocUrl: json['identityDocUrl'] ?? json['idDocumentUrl'] ?? '',
       status: json['status'] is int
           ? (json['status'] == 0 ? 'Pending' : json['status'] == 1 ? 'Approved' : json['status'] == 2 ? 'Rejected' : 'ReviewRequired')
           : (json['status'] ?? 'Pending'),
-      aiRiskScore: json['aiRiskScore'] ?? 0,
+      aiRiskScore: json['aiRiskScore'] ?? json['creditRiskScore'] ?? 0,
       aiScreeningNotes: json['aiScreeningNotes'],
       createdAtUtc: DateTime.tryParse(json['createdAtUtc'] ?? '') ?? DateTime.now(),
     );

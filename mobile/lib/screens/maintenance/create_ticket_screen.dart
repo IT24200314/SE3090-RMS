@@ -94,7 +94,7 @@ class _CreateTicketScreenState extends State<CreateTicketScreen> {
     final ticket = await ApiClient.createMaintenanceTicket(
       propertyId: 'e1a3b8c4-5d6e-7f8a-9b0c-1d2e3f4a5b6c',
       issueDescription: '[$_selectedCategory] ${_descController.text}',
-      photoUrl: _photo?.path ?? 'https://cdn.rms.local/photos/maintenance_default.jpg',
+      photoUrl: _photo?.path ?? 'https://images.unsplash.com/photo-1585704032915-c3400ca199e7?auto=format&fit=crop&w=800&q=80',
       priority: _selectedPriority,
       latitude: _location?.latitude.toString(),
       longitude: _location?.longitude.toString(),

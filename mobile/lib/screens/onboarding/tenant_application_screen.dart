@@ -112,7 +112,7 @@ class _TenantApplicationScreenState extends State<TenantApplicationScreen> {
     final app = await ApiClient.submitApplication(
       propertyId: _prop.id,
       monthlyIncome: income,
-      identityDocUrl: _capturedDocument?.path ?? 'https://cdn.rms.local/kyc/nic_kamal_perera.jpg',
+      identityDocUrl: _capturedDocument?.path ?? 'https://images.unsplash.com/photo-1633265486064-086b219458ec?auto=format&fit=crop&w=800&q=80',
     );
 
     setState(() => _isSubmitting = false);
