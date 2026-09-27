@@ -22,8 +22,9 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController(text: 'tenant@rms.lk');
-  final _passwordController = TextEditingController(text: 'Tenant123!');
+  final _passwordController = TextEditingController(text: 'Password123!');
   bool _isLoading = false;
+  bool _obscurePassword = true;
   String? _errorMessage;
 
   void _login() async {
@@ -142,10 +143,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   // Password Input
                   TextField(
                     controller: _passwordController,
-                    obscureText: true,
+                    obscureText: _obscurePassword,
                     decoration: InputDecoration(
                       labelText: 'Password',
                       prefixIcon: const Icon(Icons.lock_outline),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined,
+                          size: 20,
+                        ),
+                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                      ),
                       border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                     ),
                   ),
@@ -186,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 28),
+                  const SizedBox(height: 24),
 
                   // Quick Demo Evaluation Presets
                   Container(
@@ -212,25 +220,34 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 4),
+                        Text(
+                          'Evaluator Master Password: Password123!',
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: theme.colorScheme.onSurfaceVariant,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
                         const SizedBox(height: 10),
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
                           children: [
                             ActionChip(
-                              avatar: const Icon(Icons.person, size: 16),
-                              label: const Text('Tenant Portal'),
-                              onPressed: () => _setPreset('tenant@rms.lk', 'Tenant123!'),
+                              avatar: const Icon(Icons.person, size: 16, color: Colors.blue),
+                              label: const Text('Tenant (Nethmi)'),
+                              onPressed: () => _setPreset('tenant@rms.lk', 'Password123!'),
                             ),
                             ActionChip(
-                              avatar: const Icon(Icons.handyman, size: 16),
-                              label: const Text('Contractor App'),
-                              onPressed: () => _setPreset('contractor@rms.lk', 'Contractor123!'),
+                              avatar: const Icon(Icons.handyman, size: 16, color: Colors.amber),
+                              label: const Text('Contractor (Hashini)'),
+                              onPressed: () => _setPreset('contractor@rms.lk', 'Password123!'),
                             ),
                             ActionChip(
-                              avatar: const Icon(Icons.admin_panel_settings, size: 16),
-                              label: const Text('Manager'),
-                              onPressed: () => _setPreset('manager@rms.lk', 'Admin123!'),
+                              avatar: const Icon(Icons.admin_panel_settings, size: 16, color: Colors.indigo),
+                              label: const Text('Manager (Upamada)'),
+                              onPressed: () => _setPreset('manager@rms.lk', 'Password123!'),
                             ),
                           ],
                         ),
