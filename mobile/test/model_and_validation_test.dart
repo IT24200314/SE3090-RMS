@@ -11,6 +11,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rms_mobile/models/property.dart';
 import 'package:rms_mobile/models/maintenance_ticket.dart';
 import 'package:rms_mobile/models/tenant_application.dart';
+import 'package:rms_mobile/services/api_client.dart';
 
 void main() {
   group('Mobile Data Models - JSON Serialization Tests', () {
@@ -75,6 +76,19 @@ void main() {
       expect(app.declaredMonthlyIncome, equals(400000.0));
       expect(app.creditRiskScore, equals(92));
       expect(app.status, equals('Approved'));
+    });
+
+    test('ApiClient.submitApplication calculates 92 score for 110k rent and 450k income', () async {
+      final app = await ApiClient.submitApplication(
+        propertyId: 'prop-110k',
+        monthlyIncome: 450000.0,
+        identityDocUrl: 'https://example.com/kyc.jpg',
+        propertyRent: 110000.0,
+      );
+
+      expect(app.aiRiskScore, equals(92));
+      expect(app.status, equals('Approved'));
+      expect(app.aiScreeningNotes, contains('Low risk'));
     });
   });
 

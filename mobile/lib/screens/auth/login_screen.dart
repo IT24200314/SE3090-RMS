@@ -7,6 +7,7 @@
 //          JWT tokens, with quick-fill presets for academic evaluators and examiners.
 // =================================================================================================
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../services/auth_service.dart';
 import 'register_screen.dart';
@@ -33,18 +34,30 @@ class _LoginScreenState extends State<LoginScreen> {
       _errorMessage = null;
     });
 
-    final user = await AuthService.login(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
-    );
+    try {
+      final user = await AuthService.login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      ).timeout(const Duration(seconds: 20));
 
-    if (!mounted) return;
-    setState(() => _isLoading = false);
-
-    if (user != null) {
-      widget.onLoginSuccess();
-    } else {
-      setState(() => _errorMessage = 'Invalid credentials. Please try again.');
+      if (!mounted) return;
+      if (user != null) {
+        widget.onLoginSuccess();
+      } else {
+        setState(() => _errorMessage = 'Invalid credentials. Please try again.');
+      }
+    } on TimeoutException {
+      if (mounted) {
+        setState(() => _errorMessage =
+            'Sign in timed out. Check your connection and try again.');
+      }
+    } catch (_) {
+      if (mounted) {
+        setState(() => _errorMessage =
+            'Could not complete sign in. Please try again.');
+      }
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 

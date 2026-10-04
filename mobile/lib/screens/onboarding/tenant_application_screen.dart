@@ -113,6 +113,7 @@ class _TenantApplicationScreenState extends State<TenantApplicationScreen> {
       propertyId: _prop.id,
       monthlyIncome: income,
       identityDocUrl: _capturedDocument?.path ?? 'https://images.unsplash.com/photo-1633265486064-086b219458ec?auto=format&fit=crop&w=800&q=80',
+      propertyRent: _prop.monthlyRent,
     );
 
     setState(() => _isSubmitting = false);

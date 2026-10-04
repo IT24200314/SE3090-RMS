@@ -60,9 +60,9 @@ class _HomeNavScreenState extends State<HomeNavScreen> {
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
-        builder: (_) => LoginScreen(
+        builder: (loginContext) => LoginScreen(
           onLoginSuccess: () {
-            Navigator.of(context).pushReplacement(
+            Navigator.of(loginContext).pushReplacement(
               MaterialPageRoute(builder: (_) => const HomeNavScreen()),
             );
           },

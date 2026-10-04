@@ -268,6 +268,8 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
+app.UseMiddleware<RMS.API.Middleware.GlobalExceptionMiddleware>();
+
 app.UseCors("AllowAll");
 app.UseAuthentication();
 app.UseAuthorization();

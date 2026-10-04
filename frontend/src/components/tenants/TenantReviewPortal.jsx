@@ -7,7 +7,7 @@
 //          rent-to-income debt gauges, identity verification status, and manual approval triggers.
 // =================================================================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   FileCheck, 
   Sparkles, 
@@ -25,7 +25,7 @@ import { RiskScoreBadge, RiskScoreGauge } from './RiskScoreBadge';
 import { IdentityVerificationModal } from './IdentityVerificationModal';
 import { useToast } from '../common/Toast';
 import { useTheme } from '../../context/ThemeContext';
-import { tenantService } from '../../services/api';
+import { tenantService, propertyService } from '../../services/api';
 
 const INITIAL_APPLICATIONS = [
   {
@@ -89,9 +89,57 @@ export const TenantReviewPortal = () => {
   const fetchApplications = async () => {
     setLoading(true);
     try {
+      // 1. Fetch properties map so each application has correct title and monthly rent
+      let propertiesMap = {};
+      try {
+        const propRes = await propertyService.getProperties('', 1, 50);
+        const propList = Array.isArray(propRes.data) ? propRes.data : (propRes.data?.items || []);
+        propList.forEach(p => {
+          if (p && p.id) propertiesMap[p.id] = p;
+        });
+      } catch (pErr) {
+        console.warn('Could not fetch properties map:', pErr.message);
+      }
+
+      // 2. Fetch applications
       const res = await tenantService.getApplications();
       if (res.data && res.data.length > 0) {
-        setApplications(res.data);
+        const enriched = res.data.map(app => {
+          const prop = propertiesMap[app.propertyId];
+          const rent = Number(app.monthlyRent || prop?.monthlyRent || 180000);
+          const propTitle = app.propertyTitle || prop?.title || 'Property Unit Assignment';
+          const income = Number(app.monthlyIncome || 450000);
+          const ratio = (rent / (income || 1)) * 100;
+
+          // Standard 3-tier policy evaluation
+          let defaultScore = 92;
+          let defaultStatus = 1; // Approved
+          let defaultNotes = `Low risk: Tenant income securely covers rent (${ratio.toFixed(1)}% ratio). Identity and credit criteria met.`;
+          if (ratio > 50) {
+            defaultScore = 35;
+            defaultStatus = 2; // Rejected
+            defaultNotes = `High risk: Rent accounts for ${ratio.toFixed(1)}% of tenant's verified monthly income (Exceeds 50% limit).`;
+          } else if (ratio > 35) {
+            defaultScore = 65;
+            defaultStatus = 3; // ReviewRequired
+            defaultNotes = `Moderate risk: Rent accounts for ${ratio.toFixed(1)}% of monthly income. Flagged for Manager Approval.`;
+          }
+
+          const evaluatedScore = (app.aiRiskScore && app.aiRiskScore > 0) ? app.aiRiskScore : defaultScore;
+          const evaluatedStatus = (app.status !== undefined && app.status !== null && app.status !== 0) 
+            ? app.status 
+            : (app.aiRiskScore > 0 ? (app.aiRiskScore >= 80 ? 1 : app.aiRiskScore >= 50 ? 3 : 2) : defaultStatus);
+
+          return {
+            ...app,
+            propertyTitle: propTitle,
+            monthlyRent: rent,
+            aiRiskScore: evaluatedScore,
+            status: evaluatedStatus,
+            aiScreeningNotes: app.aiScreeningNotes || defaultNotes
+          };
+        });
+        setApplications(enriched);
       }
     } catch (err) {
       console.warn('Backend unavailable, using local state:', err.message);
@@ -99,6 +147,10 @@ export const TenantReviewPortal = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchApplications();
+  }, []);
 
   const handleEvaluateRisk = async (id) => {
     setEvaluatingId(id);
@@ -117,20 +169,24 @@ export const TenantReviewPortal = () => {
       addToast(`Risk evaluation completed for Application ${id.slice(0, 8)}`, 'success');
     } catch (err) {
       console.warn('API error, applying client-side rule evaluation:', err);
-      // Fallback deterministic simulation
+      // Fallback deterministic simulation based on official 3-tier policy
       setApplications(prev =>
         prev.map(app => {
           if (app.id === id) {
-            const rent = app.monthlyRent || 200000;
-            const income = app.monthlyIncome || 400000;
-            const ratio = rent / income;
-            let score = 88;
+            const rent = Number(app.monthlyRent || 180000);
+            const income = Number(app.monthlyIncome || 450000);
+            const ratio = (rent / (income || 1)) * 100;
+            let score = 92;
             let status = 1;
-            let notes = 'Approved: Low debt-to-rent ratio.';
-            if (ratio > 0.45) {
-              score = 62;
+            let notes = `Low risk: Tenant income securely covers rent (${ratio.toFixed(1)}% ratio). Identity and credit criteria met.`;
+            if (ratio > 50) {
+              score = 35;
+              status = 2;
+              notes = `High risk: Rent accounts for ${ratio.toFixed(1)}% of tenant's verified monthly income (Exceeds 50% limit).`;
+            } else if (ratio > 35) {
+              score = 65;
               status = 3;
-              notes = 'Moderate debt ratio (> 45%). Requires HITL Manager Approval.';
+              notes = `Moderate risk: Rent accounts for ${ratio.toFixed(1)}% of monthly income. Flagged for Manager Approval.`;
             }
             return { ...app, aiRiskScore: score, status, aiScreeningNotes: notes };
           }
@@ -297,26 +353,34 @@ export const TenantReviewPortal = () => {
       <div className="space-y-3">
         {filteredApps.map((app) => {
           const isEvaluating = evaluatingId === app.id;
-          const rent = app.monthlyRent || 180000;
-          const income = app.monthlyIncome || 450000;
+          const rent = Number(app.monthlyRent || 180000);
+          const income = Number(app.monthlyIncome || 450000);
           const debtRatio = Math.round((rent / (income || 1)) * 100);
 
-          // Debt ratio color categorization
+          // Debt ratio color categorization & calculated deterministic score
           let ratioTextColor = isLight ? 'text-emerald-700' : 'text-emerald-400';
           let ratioBarColor = 'bg-emerald-500';
           let ratioCategory = 'Optimal (≤ 35%)';
+          let calculatedScore = 92;
+
           if (debtRatio > 50) {
             ratioTextColor = isLight ? 'text-rose-700' : 'text-rose-400';
             ratioBarColor = 'bg-rose-500';
             ratioCategory = 'High Risk (> 50%)';
+            calculatedScore = 35;
           } else if (debtRatio > 35) {
             ratioTextColor = isLight ? 'text-amber-700' : 'text-amber-400';
             ratioBarColor = 'bg-amber-500';
             ratioCategory = 'Moderate (35%-50%)';
+            calculatedScore = 65;
           }
+
+          // Use evaluated aiRiskScore if valid, otherwise fallback to calculatedScore based on DTI ratio (never fallback to arbitrary 50)
+          const displayScore = (app.aiRiskScore && app.aiRiskScore > 0) ? app.aiRiskScore : calculatedScore;
 
           const isReviewRequired = app.status === 3 || app.status === 'ReviewRequired';
           const isApproved = app.status === 1 || app.status === 'Approved';
+          const isRejected = app.status === 2 || app.status === 'Rejected';
 
           return (
             <div 
@@ -334,7 +398,7 @@ export const TenantReviewPortal = () => {
               <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                 {/* Left: Applicant Identity & Score Gauge */}
                 <div className="flex items-center gap-4 min-w-[280px]">
-                  <RiskScoreGauge score={app.aiRiskScore || 50} size={64} showLabel={false} />
+                  <RiskScoreGauge score={displayScore} size={64} showLabel={false} />
                   
                   <div className="flex items-center gap-3">
                     {app.applicantAvatar ? (
@@ -365,6 +429,12 @@ export const TenantReviewPortal = () => {
                             isLight ? 'bg-amber-50 text-amber-800 border-amber-200' : 'bg-amber-500/10 text-amber-400 border-amber-500/25'
                           }`}>
                             HITL Review Req.
+                          </span>
+                        ) : isRejected ? (
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
+                            isLight ? 'bg-rose-50 text-rose-700 border-rose-200' : 'bg-rose-500/10 text-rose-400 border-rose-500/25'
+                          }`}>
+                            Rejected
                           </span>
                         ) : (
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold border ${

@@ -33,3 +33,7 @@ ENV/
 ## Antigravity / IDE temp
 .system_generated/
 *.log
+scratch/
+output/
+.codex*
+frontend/test-results/

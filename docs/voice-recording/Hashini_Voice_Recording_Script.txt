@@ -1,0 +1,134 @@
+HASHINI — RECORD කරන්න ඕන VOICE CLIPS
+RMS / SE3090 / 10-minute demonstration
+
+English READ paragraphs පමණක් කියවන්න.
+Clip names, timestamps සහ සිංහල උපදෙස් කියවන්න එපා.
+
+RECORDING උපදෙස්
+1. පහත numbered clips වෙන වෙනම record කර නමට අනුව save කරන්න.
+2. සාමාන්‍යයෙන් minute එකකට words 120–140 පමණ වේගයකින් පැහැදිලිව කියන්න.
+3. Clip එක ආරම්භයේ සහ අවසානයේ තත්පර 1ක silence එකක් තියාගන්න.
+4. එකම නිහඬ තැනක, phone/mic එක එකම දුරක තියාගෙන record කරන්න.
+5. Background music, voice filters සහ reverb දාන්න එපා.
+6. නැවත record කරන take එකකට _take2 suffix එක දාන්න.
+7. Phone recorder එක .mp3/.wav දෙනවා නම් එම extension එක තියාගන්න; පහත .m4a උදාහරණයක් පමණයි.
+8. Original audio files attachment/file ලෙස වෙන වෙනම එවන්න.
+
+CLIP 01 — Maintenance intro
+SAVE AS: Hashini_01_Maintenance_Intro.m4a
+VIDEO WINDOW: 04:55–05:10
+VOICE TARGET: approximately 12–15 seconds.
+SCREEN: Maintenance form සහ sample burst-pipe description.
+
+READ:
+Thank you, Nethmini. I am responsible for maintenance operations. I am reporting a sample burst-pipe emergency from the Flutter client and selecting the emergency priority.
+
+
+CLIP 02 — Native GPS
+SAVE AS: Hashini_02_Native_GPS.m4a
+VIDEO WINDOW: 05:10–05:25
+VOICE TARGET: approximately 11–15 seconds.
+SCREEN: Actual native GPS fix සහ coordinates. Fixed fallback values native fix ලෙස නොපෙන්වන්න.
+
+READ:
+The location action requests a device GPS fix. These coordinates describe the phone's location. Confirming that it matches the registered property requires a separate address check.
+
+
+CLIP 03 — Defect camera/photo
+SAVE AS: Hashini_03_Defect_Photo.m4a
+VIDEO WINDOW: 05:25–05:40
+VOICE TARGET: approximately 10–14 seconds.
+SCREEN: Camera → sample defect photo → attachment result.
+
+READ:
+The camera collects a demonstration defect photograph. After returning to the application, the tenant can review the attachment before submitting the maintenance report.
+
+
+CLIP 04 — Ticket submission සහ manager portal
+SAVE AS: Hashini_04_Ticket_Submission.m4a
+VIDEO WINDOW: 05:40–06:05
+VOICE TARGET: approximately 15–21 seconds.
+SCREEN: Actual submit response/ticket ID → same ID එක React manager portal එකේ.
+USE: Same record දෙපැත්තේ පෙන්වන්න පුළුවන් නම් පමණක් මෙම result narration එක භාවිත කරන්න.
+
+READ:
+After submitting, we use the returned ticket identifier to locate the same report in the manager portal. This keeps the demonstration tied to one actual request and lets us follow its state through the next stages.
+
+
+CLIP 05 — Repair estimation tool
+SAVE AS: Hashini_05_Repair_Estimate.m4a
+VIDEO WINDOW: 06:25–06:40
+VOICE TARGET: approximately 12–15 seconds.
+SCREEN: Actual Python tool result: LKR 65,000.
+NOTE: Actual result වෙනස් නම් read කරන value එකත් වෙනස් කරන්න. Gateway fallback result එක Python graph result ලෙස පෙන්වන්න එපා.
+
+READ:
+The repair tool returns an estimated cost of sixty five thousand rupees for this burst-pipe example. This is a test estimate, rather than a contractor quotation.
+
+
+CLIP 06 — Validator සහ approval requirement
+SAVE AS: Hashini_06_Validator_Approval_Guard.m4a
+VIDEO WINDOW: 06:40–07:15
+VOICE TARGET: approximately 24–32 seconds.
+SCREEN: Actual validator result, threshold code සහ workflow approval reason.
+
+READ:
+The validator compares the estimate against the fifty-thousand-rupee threshold. At or above that amount, the request requires a manager decision. The execution result should identify the plan, participating agent, tool output, validation, and approval reason. A pending-approval label must be backed by stored state before we can claim a resumable human-review workflow.
+
+
+CLIP 07 — Manager approval සහ contractor selection
+SAVE AS: Hashini_07_Manager_Approval.m4a
+VIDEO WINDOW: 07:15–07:45
+VOICE TARGET: approximately 20–26 seconds.
+SCREEN: Same ticket → authorized demo manager decision → actual contractor selection.
+
+READ:
+The estimate needs a manager decision before contractor assignment. The authorized demo manager reviews the same ticket, approves the request, and selects the test contractor. We then verify the saved result rather than relying on a success notification.
+
+
+CLIP 08 — Database persistence සහ mobile update — SUCCESS VERSION
+SAVE AS: Hashini_08_Database_Mobile_Result.m4a
+VIDEO WINDOW: 07:45–08:30
+VOICE TARGET: approximately 27–35 seconds.
+SCREEN: React refresh → PostgreSQL row → updated same-ticket state in Flutter.
+USE ONLY: මේ actual evidence තුනම පෙන්වන්න පුළුවන් වූ පසුව පමණක් video එකට දාන්න.
+
+READ:
+After reloading, the assignment remains visible. PostgreSQL contains the same ticket identifier, estimate, status, and contractor identifier. The tenant's mobile client now reads the updated state for that ticket. This completes the workflow from Flutter, through our backend, database and agent processing, to React review and back to the initiating tenant.
+
+
+CLIP 09 — Agent tests සහ CI
+SAVE AS: Hashini_09_Agent_Tests_CI.m4a
+VIDEO WINDOW: 09:00–09:25
+VOICE TARGET: approximately 18–24 seconds.
+SCREEN: Actual AI test output සහ relevant successful CI run.
+
+READ:
+The agent tests exercise workflow rules, high-cost review, and security cases. Here we show the actual test output and the frontend production build. We report the checks executed by the workflow, rather than assuming a job label means additional checks ran.
+
+
+OPTIONAL ALTERNATIVE TO CLIP 08 — Saved/mobile result තහවුරු නොවුණොත්
+SAVE AS: Hashini_ALT08_Result_Not_Verified.m4a
+VIDEO WINDOW: 07:45–08:30
+VOICE TARGET: approximately 15–22 seconds.
+EDITOR: Clip 08 හෝ ALT08 එකෙන් එකක් පමණක් භාවිත කරන්න. දෙකම එකට දාන්න එපා.
+
+READ:
+The interface changed, but the refreshed API or mobile record does not yet confirm the same saved result. The approval integration remains incomplete, so we cannot claim that the cross-platform workflow is complete.
+
+
+SEND CHECK
+- Normal clips: 01–09 — files 9ක්.
+- ALT08 එකත් එවුවොත් files 10ක්.
+- 06:05–06:25 planner section එක Upamada කියන කොටසයි; ඒකට Hashini clip එකක් අවශ්‍ය නැහැ.
+- Recording clips වල කාලය අඩුවුණාට ගැටලුවක් නැහැ; screen actions සඳහා pauses තිබෙනවා.
+- Success clip එක record කර එවිය හැකි නමුත් editor එය භාවිත කරන්නේ actual footage එකෙන් result තහවුරු වූ පසුව පමණයි.
+
+Pronunciation help:
+GPS = gee pee ess
+API = ay pee eye
+CI = see eye
+PostgreSQL = post-gres cue ell
+LangGraph = lang graph
+Sixty five thousand rupees = LKR 65,000
+Fifty thousand rupees = LKR 50,000

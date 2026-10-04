@@ -130,10 +130,13 @@ public class PropertyLeaseService : IPropertyLeaseService
     /// <inheritdoc/>
     public async Task<LeaseResponseDto> TerminateLeaseAsync(Guid leaseId, string terminationReason)
     {
-        var lease = await _context.Leases.Include(l => l.Property).FirstOrDefaultAsync(l => l.Id == leaseId);
+        var lease = await _context.Leases.Include(l => l.Property)
+            .OrderByDescending(l => l.CreatedAtUtc)
+            .FirstOrDefaultAsync(l => l.Id == leaseId || l.PropertyId == leaseId);
+
         if (lease == null)
         {
-            throw new KeyNotFoundException($"Lease with ID {leaseId} was not found.");
+            throw new KeyNotFoundException($"Lease with ID or Property ID {leaseId} was not found.");
         }
 
         // Business Rule: Only active or pending signature leases can be terminated
@@ -146,10 +149,11 @@ public class PropertyLeaseService : IPropertyLeaseService
         lease.UpdatedAtUtc = DateTime.UtcNow;
 
         // Release associated property back to Available status
-        if (lease.Property != null)
+        var propToRelease = lease.Property ?? await _context.Properties.FindAsync(lease.PropertyId);
+        if (propToRelease != null)
         {
-            lease.Property.Status = PropertyStatus.Available;
-            lease.Property.UpdatedAtUtc = DateTime.UtcNow;
+            propToRelease.Status = PropertyStatus.Available;
+            propToRelease.UpdatedAtUtc = DateTime.UtcNow;
         }
 
         await _context.SaveChangesAsync();

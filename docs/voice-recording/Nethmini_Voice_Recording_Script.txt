@@ -1,0 +1,101 @@
+NETHMINI — RECORD කරන්න ඕන VOICE CLIPS
+RMS / SE3090 / 10-minute demonstration
+
+මෙම file එකේ English paragraphs පමණක් කියවන්න.
+Clip names, timestamps සහ සිංහල උපදෙස් කියවන්න එපා.
+ඔයාගේ නම intro එකේ කියනවා නම් තමන්ගේ නිවැරදි නම භාවිත කරන්න.
+File names වල Nethmini යන නම video editor සඳහා භාවිත කරන label එකයි.
+
+RECORDING උපදෙස්
+1. පහත සෑම numbered clip එකක්ම වෙනම record කර save කරන්න.
+2. සාමාන්‍යයෙන් minute එකකට words 120–140 පමණ වේගයකින්, පැහැදිලිව කියන්න.
+3. Record button එක press කළාට පසු තත්පර 1ක් ඉඳලා කතා කරන්න.
+4. අවසානයේත් තත්පර 1ක් ඉඳලා stop කරන්න. Editorට trim කරන්න ලේසියි.
+5. Background music නොදා, එකම නිහඬ තැනක phone/mic එක එකම දුරක තියාගෙන record කරන්න.
+6. වැරදුණොත් ඒ clip එක පමණක් නැවත record කරන්න; අලුත් take එකට _take2 යන suffix එක දාන්න.
+7. පහත names .m4a ලෙස දී ඇත. Recorder එක .mp3 හෝ .wav දෙනවා නම් එම extension එකම තියාගන්න; නම මාරු කිරීමෙන් format එක convert වෙන්නේ නැහැ.
+8. හැකි නම් original audio files attachment/file ලෙස දෙන්න. එක දිග WhatsApp voice message එකක් වෙනුවට වෙන වෙනම files එවන්න.
+
+CLIP 01 — Intro සහ application form
+SAVE AS: Nethmini_01_Intro_Application.m4a
+VIDEO WINDOW: 03:10–03:40
+VOICE TARGET: approximately 14–18 seconds; full window එක පුරවන්න ඕනේ නැහැ.
+SCREEN: Tenant dashboard → property → Apply (KYC) → income field.
+
+READ:
+Thank you, Upamada. I am responsible for tenant onboarding and risk assessment. The tenant selects an available property and enters the requested application information.
+
+
+CLIP 02 — Native camera
+SAVE AS: Nethmini_02_Camera_Capture.m4a
+VIDEO WINDOW: 03:40–04:00
+VOICE TARGET: approximately 14–18 seconds.
+SCREEN: Native camera open කර sample card capture කිරීම සහ image preview.
+
+READ:
+Here I use the Android camera to photograph a clearly marked demonstration document. After capturing it, the applicant can review the image before submission.
+
+
+CLIP 03 — Application submit සහ risk ratio
+SAVE AS: Nethmini_03_Submission_Risk_Ratio.m4a
+VIDEO WINDOW: 04:00–04:35
+VOICE TARGET: approximately 22–28 seconds.
+SCREEN: Actual application submit/result → React manager review → matching application ID.
+USE: Submission සහ manager record එක ඇත්තටම පෙන්වන take එකට පමණක් මෙම clip එක දාන්න.
+
+READ:
+We submit the application and follow its identifier to the manager portal. With rent of forty five thousand rupees and income of one hundred and eighty thousand, the rent-to-income ratio is twenty five percent. The manager reviews the submitted record and its financial assessment.
+
+
+CLIP 04 — Scoring explanation සහ handover
+SAVE AS: Nethmini_04_Scoring_Handover.m4a
+VIDEO WINDOW: 04:35–04:55
+VOICE TARGET: approximately 14–19 seconds.
+SCREEN: Tenant scoring code/result → Hashiniගේ maintenance section එක.
+
+READ:
+The scoring rules assess financial inputs. Collecting a photograph does not itself prove identity or verified income. I will now hand over to Hashini for maintenance reporting.
+
+
+CLIP 05 — Mobile tests
+SAVE AS: Nethmini_05_Mobile_Tests.m4a
+VIDEO WINDOW: 08:45–09:00
+VOICE TARGET: approximately 12–15 seconds; මෙය පැහැදිලිව, අනවශ්‍ය දිග pauses නැතිව කියන්න.
+SCREEN: Actual Flutter test output සහ test names.
+
+READ:
+The mobile tests cover models, validation, widgets, and navigation. These are the executed results. Passing tests support the tested behavior; they do not replace cross-platform workflow evidence.
+
+
+CLIP 06 — Git contribution evidence
+SAVE AS: Nethmini_06_Git_Contributions.m4a
+VIDEO WINDOW: 09:25–09:35
+VOICE TARGET: approximately 7–9 seconds.
+SCREEN: Members තුන්දෙනාගේ actual commit/PR examples.
+
+READ:
+These repository records show the relevant contributions. Each member is prepared to explain the work presented under their name.
+
+
+OPTIONAL ALTERNATIVE TO CLIP 03 — Submission/upload integration වැඩ නොකරන take එක සඳහා
+SAVE AS: Nethmini_ALT03_Submission_Not_Verified.m4a
+VIDEO WINDOW: 04:00–04:35
+VOICE TARGET: approximately 20–27 seconds.
+EDITOR: Clip 03 හෝ මෙම ALT03 එකෙන් එකක් පමණක් තෝරන්න. දෙකම එකට දාන්න එපා.
+
+READ:
+Document capture is available in the client, but server upload and the complete application integration are not yet verified. For illustration, rent of forty five thousand rupees and income of one hundred and eighty thousand give a twenty five percent ratio. We report the integration limitation clearly.
+
+
+SEND CHECK
+- Normal clips: 01, 02, 03, 04, 05, 06 — files 6ක්.
+- ALT03 එකත් record කර එවුවොත් files 7ක්; editor එකේ actual footage එකට ගැළපෙන version එක තෝරයි.
+- Video timestamps කතා කරන්න එපා. Full scene duration එකට clip එක stretch කරන්න එපා.
+- Original recordings එවන්න; voice effect, music සහ reverb එකතු කරන්න එපා.
+
+Pronunciation help:
+KYC = kay why see
+API = ay pee eye
+Flutter = flutter
+Rent-to-income ratio = rent to income ray-shee-oh
+Twenty five percent = twenty five percent

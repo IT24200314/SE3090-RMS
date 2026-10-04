@@ -39,14 +39,42 @@ public class TenantScreeningService : ITenantScreeningService
             throw new InvalidBusinessOperationException("Cannot apply for a property that is not currently available.");
         }
 
+        // Standard financial rule: Rent should not exceed 35% of gross income
+        decimal rentToIncomeRatio = dto.MonthlyIncome > 0 ? (property.MonthlyRent / dto.MonthlyIncome) * 100m : 100m;
+        int calculatedRiskScore;
+        string notes;
+        ScreeningStatus resultingStatus;
+
+        if (dto.MonthlyIncome <= 0 || rentToIncomeRatio > 50m)
+        {
+            calculatedRiskScore = 35; // High Risk
+            resultingStatus = ScreeningStatus.Rejected;
+            notes = dto.MonthlyIncome <= 0
+                ? "High risk: Invalid or zero income provided."
+                : $"High risk: Rent accounts for {rentToIncomeRatio:F1}% of tenant's verified monthly income (Exceeds 50% limit).";
+        }
+        else if (rentToIncomeRatio > 35m)
+        {
+            calculatedRiskScore = 65; // Moderate Risk - Requires Human-in-the-Loop review
+            resultingStatus = ScreeningStatus.ReviewRequired;
+            notes = $"Moderate risk: Rent accounts for {rentToIncomeRatio:F1}% of monthly income. Flagged for Manager Approval.";
+        }
+        else
+        {
+            calculatedRiskScore = 92; // Low Risk / Safe
+            resultingStatus = ScreeningStatus.Approved;
+            notes = $"Low risk: Tenant income securely covers rent ({rentToIncomeRatio:F1}% ratio). Identity and credit criteria met.";
+        }
+
         var application = new TenantApplication
         {
             TenantId = dto.TenantId,
             PropertyId = dto.PropertyId,
             MonthlyIncome = dto.MonthlyIncome,
             IdentityDocUrl = dto.IdentityDocUrl,
-            Status = ScreeningStatus.Pending,
-            AiRiskScore = 0
+            Status = resultingStatus,
+            AiRiskScore = calculatedRiskScore,
+            AiScreeningNotes = notes
         };
 
         _context.TenantApplications.Add(application);
@@ -61,7 +89,10 @@ public class TenantScreeningService : ITenantScreeningService
         var app = await _context.TenantApplications.FindAsync(applicationId)
             ?? throw new NotFoundException($"Application with ID '{applicationId}' was not found.");
 
-        return MapToDto(app);
+        var prop = await _context.Properties.FindAsync(app.PropertyId);
+        var user = await _context.Users.FindAsync(app.TenantId);
+
+        return MapToDto(app, prop, user);
     }
 
     /// <inheritdoc/>
@@ -74,7 +105,23 @@ public class TenantScreeningService : ITenantScreeningService
         }
 
         var apps = await query.OrderByDescending(a => a.CreatedAtUtc).ToListAsync();
-        return apps.Select(MapToDto);
+        var propertyIds = apps.Select(a => a.PropertyId).Distinct().ToList();
+        var tenantIds = apps.Select(a => a.TenantId).Distinct().ToList();
+
+        var properties = await _context.Properties.AsNoTracking()
+            .Where(p => propertyIds.Contains(p.Id))
+            .ToDictionaryAsync(p => p.Id);
+
+        var users = await _context.Users.AsNoTracking()
+            .Where(u => tenantIds.Contains(u.Id))
+            .ToDictionaryAsync(u => u.Id);
+
+        return apps.Select(a =>
+        {
+            properties.TryGetValue(a.PropertyId, out var prop);
+            users.TryGetValue(a.TenantId, out var user);
+            return MapToDto(a, prop, user);
+        });
     }
 
     /// <inheritdoc/>
@@ -148,6 +195,49 @@ public class TenantScreeningService : ITenantScreeningService
         );
     }
 
-    private static ApplicationResponseDto MapToDto(TenantApplication app) =>
-        new(app.Id, app.TenantId, app.PropertyId, app.MonthlyIncome, app.IdentityDocUrl, app.Status, app.AiRiskScore, app.AiScreeningNotes, app.CreatedAtUtc);
+    private static ApplicationResponseDto MapToDto(TenantApplication app, Property? prop = null, User? user = null)
+    {
+        int score = app.AiRiskScore;
+        var appStatus = app.Status;
+        var notes = app.AiScreeningNotes;
+
+        // If risk score was previously 0, dynamically evaluate based on DTI ratio
+        if (score == 0 && prop != null && app.MonthlyIncome > 0)
+        {
+            decimal ratio = (prop.MonthlyRent / app.MonthlyIncome) * 100m;
+            if (ratio > 50m)
+            {
+                score = 35;
+                appStatus = ScreeningStatus.Rejected;
+                notes ??= $"High risk: Rent accounts for {ratio:F1}% of tenant's verified monthly income (Exceeds 50% limit).";
+            }
+            else if (ratio > 35m)
+            {
+                score = 65;
+                appStatus = ScreeningStatus.ReviewRequired;
+                notes ??= $"Moderate risk: Rent accounts for {ratio:F1}% of monthly income. Flagged for Manager Approval.";
+            }
+            else
+            {
+                score = 92;
+                appStatus = ScreeningStatus.Approved;
+                notes ??= $"Low risk: Tenant income securely covers rent ({ratio:F1}% ratio). Identity and credit criteria met.";
+            }
+        }
+
+        return new(
+            app.Id,
+            app.TenantId,
+            app.PropertyId,
+            app.MonthlyIncome,
+            app.IdentityDocUrl,
+            appStatus,
+            score,
+            notes,
+            app.CreatedAtUtc,
+            prop?.MonthlyRent,
+            prop?.Title,
+            user?.FullName
+        );
+    }
 }

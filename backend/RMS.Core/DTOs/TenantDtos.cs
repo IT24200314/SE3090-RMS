@@ -56,7 +56,10 @@ public record ApplicationResponseDto(
     ScreeningStatus Status,
     int AiRiskScore,
     string? AiScreeningNotes,
-    DateTime CreatedAtUtc
+    DateTime CreatedAtUtc,
+    decimal? MonthlyRent = null,
+    string? PropertyTitle = null,
+    string? ApplicantName = null
 );
 
 /// <summary>

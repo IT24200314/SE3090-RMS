@@ -149,4 +149,40 @@ public class TenantScreeningServiceTests
         Assert.False(result.RequiresManagerApproval);
         Assert.Equal(80.00m, result.RentToIncomeRatio);
     }
+
+    [Fact]
+    public async Task SubmitApplicationAsync_CalculatesAiRiskScoreAndApproves_WhenIncomeWellExceedsRent()
+    {
+        // Arrange: Rent = 110,000, Income = 450,000 (DTI: 24.4% <= 35%)
+        using var context = CreateInMemoryDbContext();
+        var service = new TenantScreeningService(context);
+
+        var property = new Property
+        {
+            Title = "Havelock City Studio Apartment",
+            Address = "324 Havelock Road, Colombo 05",
+            MonthlyRent = 110000m,
+            Status = PropertyStatus.Available,
+            LandlordId = Guid.NewGuid()
+        };
+        context.Properties.Add(property);
+        await context.SaveChangesAsync();
+
+        var dto = new SubmitApplicationDto(
+            TenantId: Guid.NewGuid(),
+            PropertyId: property.Id,
+            MonthlyIncome: 450000m,
+            IdentityDocUrl: "https://docs.rms.local/kyc/nic_card.jpg"
+        );
+
+        // Act
+        var result = await service.SubmitApplicationAsync(dto);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(92, result.AiRiskScore);
+        Assert.Equal(ScreeningStatus.Approved, result.Status);
+        Assert.NotNull(result.AiScreeningNotes);
+        Assert.Contains("24.4%", result.AiScreeningNotes);
+    }
 }

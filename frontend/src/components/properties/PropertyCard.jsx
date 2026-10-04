@@ -23,7 +23,7 @@ const PROPERTY_PHOTOS = {
   'Nuwara Eliya': 'https://images.unsplash.com/photo-1518780664697-55e3ad937233?auto=format&fit=crop&w=800&q=80'
 };
 
-export const PropertyCard = ({ property, onDraftLease, onTerminateLease }) => {
+export const PropertyCard = ({ property, onDraftLease, onTerminateLease, currency = 'LKR', exchangeRate = 1 }) => {
   const { theme } = useTheme();
   const isLight = theme === 'light';
 
@@ -116,7 +116,12 @@ export const PropertyCard = ({ property, onDraftLease, onTerminateLease }) => {
               <span className="text-sm font-bold truncate drop-shadow-md">{property.title}</span>
             </div>
             <span className="text-xs font-mono font-bold text-emerald-400 bg-black/50 px-2 py-0.5 rounded backdrop-blur-sm">
-              LKR {(Number(property.monthlyRent) / 1000).toFixed(0)}k/mo
+              {currency === 'USD' 
+                ? `$${Math.round(Number(property.monthlyRent) * exchangeRate).toLocaleString()} USD`
+                : currency === 'EUR'
+                ? `€${Math.round(Number(property.monthlyRent) * exchangeRate).toLocaleString()} EUR`
+                : `LKR ${(Number(property.monthlyRent) / 1000).toFixed(0)}k/mo`
+              }
             </span>
           </div>
         </div>
@@ -165,10 +170,15 @@ export const PropertyCard = ({ property, onDraftLease, onTerminateLease }) => {
               <span className={`text-[9px] font-semibold block uppercase tracking-wider ${
                 isLight ? 'text-slate-500' : 'text-slate-400'
               }`}>
-                Monthly Rent
+                Monthly Rent {currency !== 'LKR' ? `(${currency})` : ''}
               </span>
               <span className="text-xs font-bold text-emerald-600 font-mono">
-                LKR {Number(property.monthlyRent).toLocaleString()}
+                {currency === 'USD'
+                  ? `$${Math.round(Number(property.monthlyRent) * exchangeRate).toLocaleString()}`
+                  : currency === 'EUR'
+                  ? `€${Math.round(Number(property.monthlyRent) * exchangeRate).toLocaleString()}`
+                  : `LKR ${Number(property.monthlyRent).toLocaleString()}`
+                }
               </span>
             </div>
             <div>

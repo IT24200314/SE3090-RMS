@@ -37,6 +37,10 @@ export const propertyService = {
   // Executes early lease termination state machine and reverts property back to Available
   terminateLease: (id, reason) => 
     api.put(`/leases/${id}/terminate`, { terminationReason: reason }),
+
+  // Converts rental prices from LKR to foreign currencies (Open Exchange Rates API)
+  convertCurrency: (amountLkr, targetCurrency) =>
+    api.post('/external/currency/convert', { amountLkr, targetCurrency }),
 };
 
 // =================================================================================================

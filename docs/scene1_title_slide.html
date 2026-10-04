@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SE3090 - Scene 1: Introduction & Architecture</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(18, 26, 44, 0.85);
+      --card-border: rgba(99, 102, 241, 0.25);
+      --primary: #6366f1;
+      --accent: #38bdf8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: radial-gradient(circle at 15% 20%, #171d34 0%, #090d16 100%);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2.5rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: absolute;
+      width: 700px;
+      height: 700px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+      top: -150px;
+      right: -150px;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .container {
+      max-width: 1200px;
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 28px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.05);
+      padding: 3rem;
+      position: relative;
+      z-index: 10;
+    }
+    .top-badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 1.5rem;
+    }
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      padding: 0.4rem 1rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+    .badge-primary {
+      background: rgba(99, 102, 241, 0.15);
+      color: #a5b4fc;
+      border: 1px solid rgba(99, 102, 241, 0.4);
+    }
+    .badge-sliit {
+      background: rgba(239, 68, 68, 0.15);
+      color: #fca5a5;
+      border: 1px solid rgba(239, 68, 68, 0.4);
+    }
+    .title {
+      font-size: 2.75rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .subtitle {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      max-width: 850px;
+      line-height: 1.6;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .card {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 20px;
+      padding: 1.5rem 1.75rem;
+    }
+    .card-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .team-member {
+      display: flex;
+      flex-direction: column;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .team-member:last-child {
+      border-bottom: none;
+    }
+    .member-name {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #ffffff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .member-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      color: #93c5fd;
+      background: rgba(56, 189, 248, 0.1);
+      padding: 0.15rem 0.6rem;
+      border-radius: 6px;
+    }
+    .member-role {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 0.2rem;
+    }
+    .tech-stack-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .tech-tag {
+      background: rgba(30, 41, 59, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 0.5rem 0.9rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(99, 102, 241, 0.08);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      padding: 1.25rem 2rem;
+      border-radius: 18px;
+    }
+    .action-text {
+      font-size: 0.95rem;
+      color: #c7d2fe;
+    }
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+    }
+    .btn {
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      padding: 0.7rem 1.4rem;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+    }
+    .btn-outline {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .arch-preview {
+      margin-top: 1.5rem;
+      text-align: center;
+    }
+    .arch-preview img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="top-badge-row">
+      <span class="badge badge-sliit">SLIIT KANDY UNI • FACULTY OF COMPUTING</span>
+      <span class="badge badge-primary">SE3090: SOFTWARE ENGINEERING FRAMEWORKS</span>
+      <span class="badge badge-primary">GROUP ID: SEF_KDY_AI_04</span>
+    </div>
+
+    <h1 class="title">Rental Management System (RMS)</h1>
+    <p class="subtitle">
+      Enterprise Full-Stack Application with Multi-Agent Agentic AI Orchestration & Governed Human-in-the-Loop Safeguards.
+    </p>
+
+    <div class="grid-2">
+      <!-- Team Members Column -->
+      <div class="card">
+        <div class="card-title">👥 Team Members & Component Allocation</div>
+        
+        <div class="team-member">
+          <div class="member-name">
+            <span>E.M.U.I.B. Ekanayake (Leader)</span>
+            <span class="member-id">IT24200314</span>
+          </div>
+          <div class="member-role">Component A: Property Listing, Multi-Currency, Lease Lifecycle & Master Planning Agent</div>
+        </div>
+
+        <div class="team-member">
+          <div class="member-name">
+            <span>D.G.N.S. Widumini</span>
+            <span class="member-id">IT24101176</span>
+          </div>
+          <div class="member-role">Component B: Tenant Screening & Onboarding, Camera KYC & Risk Scoring Agent</div>
+        </div>
+
+        <div class="team-member">
+          <div class="member-name">
+            <span>H.A. Wickramathilaka</span>
+            <span class="member-id">IT24100427</span>
+          </div>
+          <div class="member-role">Component C: Maintenance Triage, GPS Tagging, LKR 50K Financial Guardrail & HITL Approval</div>
+        </div>
+      </div>
+
+      <!-- Tech Stack Column -->
+      <div class="card">
+        <div class="card-title">⚡ Mandatory 4-Tier Reference Architecture</div>
+        <div class="tech-stack-row">
+          <div class="tech-tag">🟣 ASP.NET Core 8 Web API</div>
+          <div class="tech-tag">🐘 PostgreSQL 16 (Neon Serverless)</div>
+          <div class="tech-tag">⚛️ React 19 Admin Portal (Vercel)</div>
+          <div class="tech-tag">📱 Flutter 3.24+ Mobile Client</div>
+          <div class="tech-tag">🤖 LangGraph Multi-Agent AI (Port 8000)</div>
+          <div class="tech-tag">🔒 LKR 50,000 HITL Guardrail</div>
+        </div>
+        <div class="arch-preview">
+          <img src="figures/system_architecture.png" alt="Integrated System Architecture">
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Navigation / Action Bar -->
+    <div class="action-bar">
+      <div class="action-text">
+        <strong>Scene 1 Live Demonstration Links</strong> — Render Cloud & Swagger API ready for evaluation.
+      </div>
+      <div class="btn-group">
+        <a href="https://rms-backend-api-yons.onrender.com/swagger/index.html" target="_blank" class="btn btn-primary">
+          🚀 Open Live Swagger UI
+        </a>
+        <a href="https://rms-backend-api-yons.onrender.com/health" target="_blank" class="btn btn-outline">
+          🩺 Health Check Probe
+        </a>
+        <a href="https://rms-frontend-jet-rho.vercel.app/" target="_blank" class="btn btn-outline">
+          ⚛️ React Portal
+        </a>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

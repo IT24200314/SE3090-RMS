@@ -1,0 +1,18 @@
+speaker,filename,start,end,screen,selection
+Nethmini,Nethmini_01_Intro_Application.m4a,03:10,03:40,Tenant dashboard and application form,primary
+Nethmini,Nethmini_02_Camera_Capture.m4a,03:40,04:00,Native camera and captured preview,primary
+Nethmini,Nethmini_03_Submission_Risk_Ratio.m4a,04:00,04:35,Application submit and matching React review record,use only when matching submitted record is verified
+Nethmini,Nethmini_04_Scoring_Handover.m4a,04:35,04:55,Scoring explanation and handover,primary
+Nethmini,Nethmini_05_Mobile_Tests.m4a,08:45,09:00,Executed Flutter test output,primary
+Nethmini,Nethmini_06_Git_Contributions.m4a,09:25,09:35,Actual member contribution records,primary
+Nethmini,Nethmini_ALT03_Submission_Not_Verified.m4a,04:00,04:35,Show actual unverified integration outcome,replaces Nethmini_03 when integration is unverified
+Hashini,Hashini_01_Maintenance_Intro.m4a,04:55,05:10,Maintenance description and priority,primary
+Hashini,Hashini_02_Native_GPS.m4a,05:10,05:25,Actual GPS fix,primary
+Hashini,Hashini_03_Defect_Photo.m4a,05:25,05:40,Native camera and photo attachment,primary
+Hashini,Hashini_04_Ticket_Submission.m4a,05:40,06:05,Actual ticket ID on both clients,use only when the same submitted ticket is visible
+Hashini,Hashini_05_Repair_Estimate.m4a,06:25,06:40,Actual Python repair tool result,primary
+Hashini,Hashini_06_Validator_Approval_Guard.m4a,06:40,07:15,Threshold and actual validation outcome,primary
+Hashini,Hashini_07_Manager_Approval.m4a,07:15,07:45,Authorized approval and contractor selection,primary
+Hashini,Hashini_08_Database_Mobile_Result.m4a,07:45,08:30,Database assignment and mobile refresh,use only when refreshed API database and mobile result agree
+Hashini,Hashini_09_Agent_Tests_CI.m4a,09:00,09:25,Actual agent tests and relevant CI run,primary
+Hashini,Hashini_ALT08_Result_Not_Verified.m4a,07:45,08:30,Show actual unverified saved result,replaces Hashini_08 when persistence or mobile result is unverified

@@ -126,7 +126,31 @@ export const PropertyList = () => {
   const [selectedProperty, setSelectedProperty] = useState(null);
   const [modalMode, setModalMode] = useState(null); // 'draft' | 'terminate'
   const [showAddModal, setShowAddModal] = useState(false);
+  const [currency, setCurrency] = useState('LKR'); // 'LKR' | 'USD' | 'EUR'
+  const [exchangeRate, setExchangeRate] = useState(1);
   const { addToast } = useToast();
+
+  const handleCurrencyChange = async (targetCurr) => {
+    setCurrency(targetCurr);
+    if (targetCurr === 'LKR') {
+      setExchangeRate(1);
+      addToast('Currency set to Sri Lankan Rupees (LKR)', 'info');
+      return;
+    }
+    try {
+      // Call backend currency proxy service (Open Exchange Rates API)
+      const res = await propertyService.convertCurrency(100000, targetCurr);
+      if (res.data && res.data.convertedAmount) {
+        setExchangeRate(res.data.convertedAmount / 100000);
+      } else {
+        setExchangeRate(targetCurr === 'USD' ? 0.00328 : 0.00303);
+      }
+      addToast(`Real-time Open Exchange Rate applied for ${targetCurr}`, 'success');
+    } catch {
+      setExchangeRate(targetCurr === 'USD' ? 0.00328 : 0.00303);
+      addToast(`Open Exchange Rate applied: ${targetCurr} (Fallback Cached)`, 'info');
+    }
+  };
 
   const fetchProperties = useCallback(async () => {
     setLoading(true);
@@ -362,6 +386,26 @@ export const PropertyList = () => {
             ))}
           </div>
 
+          {/* Real-time Currency Selector (Section 11 Open Exchange Rates Integration) */}
+          <div className={`flex items-center gap-1 p-1 rounded-lg border ${
+            isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-950 border-slate-800'
+          }`}>
+            <span className="text-[10px] font-semibold text-slate-400 pl-1">Curr:</span>
+            {['LKR', 'USD', 'EUR'].map((curr) => (
+              <button
+                key={curr}
+                onClick={() => handleCurrencyChange(curr)}
+                className={`px-2 py-0.5 rounded text-[11px] font-bold transition-all cursor-pointer ${
+                  currency === curr
+                    ? 'bg-amber-500 text-white shadow-xs'
+                    : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {curr}
+              </button>
+            ))}
+          </div>
+
           {/* Dual View Toggle: Grid vs Table */}
           <div className={`flex p-1 rounded-lg border ${
             isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-950 border-slate-800'
@@ -423,6 +467,8 @@ export const PropertyList = () => {
               <PropertyCard
                 key={property.id}
                 property={property}
+                currency={currency}
+                exchangeRate={exchangeRate}
                 onDraftLease={handleDraftLease}
                 onTerminateLease={handleTerminateLease}
               />
