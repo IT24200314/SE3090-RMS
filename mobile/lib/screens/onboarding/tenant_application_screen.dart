@@ -7,6 +7,7 @@
 //          capture National ID / Passport via device Camera, and submit for automated AI screening.
 // =================================================================================================
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
@@ -66,7 +67,9 @@ class _TenantApplicationScreenState extends State<TenantApplicationScreen> {
     try {
       final XFile? photo = await _picker.pickImage(
         source: ImageSource.camera,
-        imageQuality: 90,
+        imageQuality: 75,
+        maxWidth: 1024,
+        maxHeight: 1024,
       );
       if (photo != null) {
         setState(() {
@@ -76,7 +79,12 @@ class _TenantApplicationScreenState extends State<TenantApplicationScreen> {
       }
     } catch (e) {
       // Fallback to gallery or mock capture for emulators without camera
-      final XFile? photo = await _picker.pickImage(source: ImageSource.gallery);
+      final XFile? photo = await _picker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 75,
+        maxWidth: 1024,
+        maxHeight: 1024,
+      );
       if (photo != null) {
         setState(() {
           _capturedDocument = photo;
@@ -88,7 +96,12 @@ class _TenantApplicationScreenState extends State<TenantApplicationScreen> {
 
   Future<void> _pickFromGallery() async {
     HapticFeedback.selectionClick();
-    final XFile? photo = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? photo = await _picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: 75,
+      maxWidth: 1024,
+      maxHeight: 1024,
+    );
     if (photo != null) {
       setState(() {
         _capturedDocument = photo;
@@ -109,10 +122,20 @@ class _TenantApplicationScreenState extends State<TenantApplicationScreen> {
     setState(() => _isSubmitting = true);
     final income = double.tryParse(_incomeController.text) ?? 0.0;
 
+    String docPayload = 'https://images.unsplash.com/photo-1633265486064-086b219458ec?auto=format&fit=crop&w=800&q=80';
+    if (_capturedDocument != null) {
+      try {
+        final bytes = await _capturedDocument!.readAsBytes();
+        docPayload = 'data:image/jpeg;base64,${base64Encode(bytes)}';
+      } catch (e) {
+        docPayload = _capturedDocument!.path;
+      }
+    }
+
     final app = await ApiClient.submitApplication(
       propertyId: _prop.id,
       monthlyIncome: income,
-      identityDocUrl: _capturedDocument?.path ?? 'https://images.unsplash.com/photo-1633265486064-086b219458ec?auto=format&fit=crop&w=800&q=80',
+      identityDocUrl: docPayload,
       propertyRent: _prop.monthlyRent,
     );
 

@@ -11,7 +11,9 @@
 
 මෙම recording එකේ flow එක මෙහෙම තියාගන්න:
 
-Architecture → API/database health → real API request/response → Manager web portal → property/lease feature → mobile client → Agentic AI guardrail → tests and conclusion
+Architecture → API/database health → real API request/response → Manager web portal → Upamada's property/lease website → mobile client → Nethmi's tenant screening website → Hashini's maintenance website → all three members' AI contributions → tests and conclusion
+
+**Recording continuation:** 00:00–04:25 දක්වා දැනට record කළ video එක තියාගන්න. Upamadaගේ Properties & Leases website component එක 02:45–03:35දී පෙන්වා තිබෙනවා. Flutter පස්සේ 04:25දී Nethmiගේ Tenant Screening website component එකත්, ඊළඟට Hashiniගේ Maintenance website component එකත් පෙන්වන්න. ඉන්පසු agents තුන explain කරන්න. සියලු narration Upamada විසින් කියන්න; අනෙක් membersගේ contributions නමින් credit කරන්න. පහත timings editing targets වේ; අවසන් video duration එක narration සහ actual recordings අනුව verify කරන්න.
 
 Folders අතර අදාළ නැති විදිහට යන්න එපා. Source code එක කෙටියෙන් පෙන්වන්නේ ඒ screen එකේ පෙන්වන feature එකට සම්බන්ධ file එකක් පමණයි.
 
@@ -35,7 +37,15 @@ Browser tabs කලින් open කරලා services warm කරගන්න.
 | backend/RMS.Infrastructure/Data/AppDbContext.cs | PostgreSQL DbSets සහ relationship mapping |
 | frontend/src/components/properties/PropertyList.jsx | React property list/filter UI |
 | frontend/src/components/properties/LeaseModal.jsx | Lease form සහ Generate Legal Contract button |
+| frontend/src/components/tenants/TenantReviewPortal.jsx | Nethmiගේ tenant application review website |
+| frontend/src/components/tenants/IdentityVerificationModal.jsx | Demo document inspection UI |
+| frontend/src/components/maintenance/MaintenanceBoard.jsx | Maintenance board, triage සහ approval UI |
+| backend/RMS.Infrastructure/Services/MaintenanceService.cs | Persisted ticket triage සහ business rules |
+| ai-agent/agents/planner.py | Upamadaගේ Planning Agent |
+| ai-agent/agents/tenant_agent.py | Nethmiගේ Tenant Risk Scoring Agent |
+| ai-agent/agents/maintenance_agent.py | Hashiniගේ Maintenance Triage Agent |
 | ai-agent/workflow.py | Planner, domain agent සහ validator graph |
+| ai-agent/tools/allowlisted_tools.py | Financial ratio, repair estimate සහ contractor lookup tools |
 | ai-agent/agents/validator.py | LKR 50,000 approval threshold |
 | .github/workflows/ci.yml | CI build and test commands |
 
@@ -56,9 +66,13 @@ Browser tabs කලින් open කරලා services warm කරගන්න.
 | 01:55–02:45 | 50 s | React login | Login as manager and explain role |
 | 02:45–03:35 | 50 s | React properties | Search, filter and lease entry |
 | 03:35–04:25 | 50 s | Flutter | Show tenant/mobile workflow |
-| 04:25–05:35 | 70 s | AI workflow | Plan, tool, validator and guardrail |
-| 05:35–06:25 | 50 s | Tests/CI | Show actual test and CI evidence |
-| 06:25–07:00 | 35 s | Closing | Summarize and finish |
+| 04:25–04:50 | 25 s | Nethmi's React tenant screening | Applications, income/rent and document inspection |
+| 04:50–05:20 | 30 s | Hashini's React maintenance | Work orders, triage and financial review |
+| 05:20–05:40 | 20 s | Planning Agent | Upamada: plan and conditional routing |
+| 05:40–06:05 | 25 s | Tenant Risk Agent | Nethmi: financial assessment and score |
+| 06:05–06:35 | 30 s | Maintenance Agent + Validator | Hashini: estimate, contractor recommendation and guardrail |
+| 06:35–06:50 | 15 s | Tests/CI | Show actual test and CI evidence |
+| 06:50–07:00 | 10 s | Closing | Credit all members and finish |
 | **Total** | **420 s** | | |
 
 ## Full script and screen actions
@@ -143,21 +157,108 @@ Browser tabs කලින් open කරලා services warm කරගන්න.
 
 > The mobile interface is implemented, but this device take does not complete the native capture step. I will show the source implementation and report the integration status accurately.
 
-### 04:25–05:35 — Agentic AI workflow and approval guardrail / Upamada
+### 04:25–04:50 — Nethmi's tenant screening website / Upamada
 
-**Open:** VS Code files: ai-agent/workflow.py, ai-agent/tools/allowlisted_tools.py, and ai-agent/agents/validator.py.
+**Open:** React manager portal → **Tenant Screening & KYC**.
 
-Live AI response/telemetry එකක් තිබේ නම් ඒක පෙන්වන්න. Static sample trace එක live execution ලෙස පෙන්වන්න එපා.
+**කරන්න:**
 
-**කරන්න:** workflow.py තුළ planner, tenant agent, maintenance agent සහ validator nodes පෙන්වන්න. allowlisted tools file එකේ repair estimate function එක පෙන්වන්න. validator.py තුළ HIGH_COST_THRESHOLD = 50000.0 සහ >= condition එක පෙන්වන්න. Actual workflow response එකේ workflow ID, plan steps, agent trace, estimated cost, validation result සහ approval status පෙන්වන්න.
+1. **04:25–04:32:** Mobile screen එකෙන් manager website එකට මාරු වී **Tenant Screening & KYC** click කරන්න. Application cards සහ **Approved / Pending AI** tabs පෙන්වන්න.
+2. **04:32–04:40:** Demo application එකක property, monthly income, rent, displayed score සහ status පෙන්වන්න. Screen එකේ actual figures භාවිත කරන්න.
+3. **04:40–04:50:** **Inspect KYC Document** click කර demo document preview එක පෙන්වන්න; modal එක close කරන්න. **Run Risk AI** control තිබේ නම් එය පෙන්වා agent explanation එක ඉදිරියේ ඇති බව කියන්න. මේ section එක website workflow සඳහායි.
 
 **Say:**
 
-> Our Agentic AI workflow begins with a planning node and routes the objective to the relevant domain agent. A maintenance request can call an allow-listed repair-estimation tool. The deterministic validator then checks the result against our financial policy. For the burst-pipe test case, the implementation estimate is sixty five thousand Sri Lankan rupees. Because this is at least the fifty-thousand-rupee threshold, the result should require a manager decision. The important evidence is the actual workflow ID, agent trace, tool result, validation decision, and approval status. A source file or a sample telemetry card alone is not proof that a live workflow executed.
+> We have already demonstrated my property and lease website component. After the mobile client, this is Nethmi Widumini's tenant screening website. The manager can review applications, compare income with rent, inspect a demonstration document, and view screening scores and statuses. I will explain her Python risk agent shortly.
 
-Manager approval, workflow resume, database persistence, contractor dispatch සහ mobile refresh පෙන්වන්න පුළුවන් වෙන්නේ ඒවා actual end-to-end test එකකින් තහවුරු කළ පසු පමණයි.
+**Recording note:** Displayed scores/statuses සහ documents seeded හෝ client-calculated විය හැකියි; API result එකෙන් තහවුරු කර පමණක් persisted result ලෙස කියන්න. **Approve KYC Verification** handler එක local state update කරනවා; document preview එක automated identity verification සනාථ කරන්නේ නැහැ. Already recorded Upamadaගේ Properties & Leases screen එකට නැවත යාම අවශ්‍ය නැහැ.
 
-### 05:35–06:25 — Tests, CI and deployment evidence / Upamada
+### 04:50–05:20 — Hashini's maintenance website / Upamada
+
+**Open:** React manager portal → **Maintenance & Dispatch**. අවශ්‍ය නම් Swagger එකේ maintenance ticket response එක prepared tab එකක තියාගන්න.
+
+**කරන්න:**
+
+1. **04:50–04:57:** Maintenance & Dispatch click කරන්න. **Unassigned (Triage)**, **Dispatched**, **In Progress** සහ **Resolved** columns පෙන්වන්න.
+2. **04:57–05:08:** Rehearsal එකේ API එකෙන් තහවුරු කළ disposable demo ticket එක තෝරන්න. Description, priority සහ **AI Triage** button පෙන්වන්න; button එක තිබේ නම් click කර returned estimate/status පෙන්වන්න.
+3. **05:08–05:20:** High-cost ticket එකේ **Immediate Financial Review Queue**, estimate සහ **Authorize LKR … Repair** control පෙන්වන්න. Swagger **GET /api/maintenance/tickets/{id}** response එකෙන් එම ticket ID, estimate සහ status verify කරන්න. Saved approval එක කලින් verify කර නැත්නම් මෙහි approval click එක අවශ්‍ය නැහැ.
+
+**Say:**
+
+> Next is Hashini Wickramathilaka's maintenance website component. Work orders are organized by progress, with descriptions, priorities, repair estimates, and financial review controls. Here, the high-cost ticket is marked for manager review. I compare it with its API response to confirm the saved result. With all three website components covered, I will now explain our AI agents.
+
+**Recording note:** Board එකේ seeded tickets සහ API error වෙලාවට local simulation තිබෙනවා. **AI Triage** button එකේ backend path එක C# `MaintenanceService` භාවිත කරනවා; එය පමණක් Python LangGraph execution එකක් සනාථ කරන්නේ නැහැ. Approval handler එක `approveTicket` call කරන නමුත් service එකේ ඒ method එක නැහැ; contractor dispatch/status advances ද local state updates. UI change එකක් පමණක් persisted approval/dispatch ලෙස විස්තර කරන්න එපා.
+
+### 05:20–05:40 — Upamada's Planning and Orchestration Agent / Upamada
+
+**Open:** `ai-agent/agents/planner.py` → `ai-agent/workflow.py` → prepared Swagger **POST /api/v1/ai/workflow/start** response.
+
+**කරන්න:**
+
+1. **05:20–05:26:** `planning_agent_node` සහ `state.plan_steps` පෙන්වන්න.
+2. **05:26–05:32:** `workflow.py` තුළ `route_next_agent` පෙන්වන්න: `TENANT_APPLICATION` → `tenant_agent`; `MAINTENANCE` → `maintenance_agent`; දෙකම validator වෙත යනවා.
+3. **05:32–05:40:** පහත tenant request එක කලින් prepare කර **Try it out → Execute** කරන්න. Response එකේ actual `workflow_id`, `plan_steps` සහ `agent_trace` පෙන්වන්න. මේ response එක next section එකට open තියාගන්න.
+
+**Say:**
+
+> My Planning and Orchestration Agent creates execution steps for the objective. The graph routes tenant applications and maintenance requests to their respective agents, followed by the validator. This workflow response shows the generated plan and execution trace.
+
+**Tenant workflow request — paste into Swagger before recording:**
+
+```json
+{
+  "domain_objective": "Screen a demo tenant for a residential lease",
+  "target_entity_type": "TENANT_APPLICATION",
+  "tenant_income": 300000,
+  "property_rent": 60000
+}
+```
+
+**Rehearsal:** **GET /api/v1/ai/health** එකේ `CONNECTED` බලන්න. Workflow response එකේ `plan_steps` සහ Python `agent_trace` ඇත්තටම තිබෙනවාද බලන්න. `WF-FALLBACK-…` response එකක් නම් C# fallback එකක් ලෙස හඳුන්වන්න; Python agents run වූ බව කියන්න එපා. Request එක seconds 10ට වැඩි කාලයක් ගත්තොත් gateway fallback විය හැකියි. Recording එකේ wait time කපාගන්න පුළුවන්; request සහ actual result දෙකම පෙන්වන්න.
+
+### 05:40–06:05 — Nethmi's Tenant Screening and Risk Agent / Upamada
+
+**Open:** Previous tenant workflow response → `ai-agent/agents/tenant_agent.py` → `ai-agent/tools/allowlisted_tools.py`.
+
+**කරන්න:**
+
+1. **05:40–05:51:** Response එකේ `rent_to_income_ratio`, `screening_score`, Nethmiගේ `agent_trace` entry සහ `final_status` පෙන්වන්න. මේ inputs සඳහා Python tool එකේ expected ratio **20%**, score **92/100**; actual response එක තහවුරු කර පමණක් කියන්න.
+2. **05:51–06:05:** `tenant_screening_agent_node` තුළ `verify_credit_and_identity_tool` call එක සහ tool එකේ ratio/score rules පෙන්වන්න. Model advisory එකක් response එකේ නැත්නම් Gemini advisory generated බව කියන්න එපා.
+
+**Say:**
+
+> Nethmi Widumini developed the Tenant Screening and Risk Agent. It uses the supplied income and rent to calculate affordability and a screening score through an allow-listed tool. This example has a twenty-percent rent-to-income ratio and a score of ninety-two. These are policy-based demo results; the current identity flag is simulated, rather than an external identity verification.
+
+**Evidence note:** Website එකේ **Tenant Screening & KYC → Run Risk AI** screen එක අදාළ business UI ලෙස පෙන්වන්න පුළුවන්. ඒ button එක හෝ displayed score එක පමණක් Python agent run වූ බව සනාථ කරන්නේ නැහැ; මෙහි Python workflow response එක භාවිත කරන්න. Ratios >35%ට score 65, >50%ට score 35; Python validator එක score <=65 සඳහා manager review flag කරනවා. එම Python path එක automatic tenant rejection ලෙස විස්තර කරන්න එපා.
+
+### 06:05–06:35 — Hashini's Maintenance Triage Agent and Validator / Upamada
+
+**Open:** Swagger **POST /api/v1/ai/workflow/start** → `ai-agent/agents/maintenance_agent.py` → `ai-agent/agents/validator.py`.
+
+**කරන්න:**
+
+1. **06:05–06:16:** පහත maintenance request එක execute කරන්න. Actual response එකේ `trade_category`, `estimated_cost`, `recommended_contractor` සහ Hashiniගේ `agent_trace` entry පෙන්වන්න.
+2. **06:16–06:24:** `maintenance_agent.py` තුළ `estimate_repair_budget_tool` සහ `check_contractor_availability_tool` calls පෙන්වන්න.
+3. **06:24–06:35:** `validator.py` තුළ `HIGH_COST_THRESHOLD = 50000.0`, `>=` condition එක පෙන්වන්න. Response එකේ `requires_human_approval`, `approval_reason`, `final_status` පෙන්වන්න. Python burst-pipe case එකේ expected cost **65000**, status **PENDING_APPROVAL**.
+
+**Say:**
+
+> Hashini's Maintenance Triage Agent classifies the defect, estimates the repair budget, and recommends a contractor from the demo directory. This Python burst-pipe case estimates sixty-five thousand rupees. The deterministic validator applies the fifty-thousand-rupee threshold and returns a pending-approval result. Durable approval, workflow resume, and contractor dispatch need separate evidence.
+
+**Maintenance workflow request — paste into Swagger before recording:**
+
+```json
+{
+  "domain_objective": "Triage a demo burst-pipe maintenance request",
+  "target_entity_type": "MAINTENANCE",
+  "issue_description": "Major burst pipe flooding the kitchen",
+  "reported_priority": "HIGH"
+}
+```
+
+**Evidence note:** Contractor lookup එක demo directory එකක්; real contractor booking එකක් ලෙස කියන්න එපා. Python graph එක validator පසු `END` වෙත යනවා; `PENDING_APPROVAL` flag එක තිබීම පමණක් durable paused execution හෝ working resume endpoint එකක් සනාථ කරන්නේ නැහැ. Backend fallback response එකේ burst-pipe cost **85000** සහ `PAUSED_FOR_HUMAN` ලැබිය හැකියි; ඒක Python 65000 result එකට සමාන බව කියන්න එපා. Actual result අනුව narration වෙනස් කරන්න.
+
+### 06:35–06:50 — Tests, CI and deployment evidence / Upamada
 
 **Open:** Prepared terminal and GitHub Actions page.
 
@@ -173,15 +274,15 @@ GitHub Actions එකේ actual backend test, AI pytest සහ frontend build jo
 
 **Say:**
 
-> Finally, I will show the executed quality checks. The backend test command gives the actual number of passed and failed tests. The mobile and AI results are shown from the environment in which they were actually run. GitHub Actions provides the build and test evidence for the repository. These results support the tested parts of the project, while the live workflow evidence connects the clients, API, database, and Agentic AI behavior.
+> Finally, these outputs show the backend, mobile, and AI tests that actually ran, together with our build evidence. We also inspected the workflow plans, agent traces, tool results, and validation decisions.
 
-### 06:25–07:00 — Closing / Upamada
+### 06:50–07:00 — Closing / Upamada
 
 **Open:** Closing slide with member names and contribution credits. Upamadaගේ voice එක පමණක් භාවිත කරන්න.
 
 **Say:**
 
-> To conclude, our Rental Management System brings together a React manager portal, a Flutter tenant application, an ASP.NET Core Web API, PostgreSQL persistence, third-party integration, and a governed Agentic AI workflow. In this demonstration I showed the architecture, deployed health, Swagger request and response, manager portal, business modules, mobile client, AI guardrail, and test evidence. Our team members contributed across these components, and we are prepared to explain, test, modify, and debug our work during the viva. Thank you for watching.
+> This completes Group Four's Rental Management System demonstration, covering Upamada's, Nethmi's, and Hashini's website and AI contributions. Thank you for watching.
 
 ## Final checklist
 
@@ -192,6 +293,10 @@ GitHub Actions එකේ actual backend test, AI pytest සහ frontend build jo
 - Property/lease result එක refresh/API/DB එකෙන් verify කළාද?
 - Mobile camera/GPS result එක actual ද, නැත්නම් limitation එක කියනවාද?
 - AI trace එක actual execution එකක්ද, static sample එකක්ද?
+- Maintenance ticket එකේ saved state එක API එකෙන් verify කළාද?
+- Upamadaගේ Properties & Leases website, Nethmiගේ Tenant Screening website සහ Hashiniගේ Maintenance website තුනම පැහැදිලිව පෙන්වනවාද?
+- Planning, Tenant Risk සහ Maintenance Triage agents තුනම වෙන වෙනම credit කර පෙන්වනවාද?
+- Tenant සහ maintenance requests දෙකේම actual Python agent traces තිබෙනවාද, නැත්නම් fallback බව කියනවාද?
 - Test counts recording දවසේ actual output එකද?
 - Video එක 07:00ට අවසන් වෙනවාද?
 - Final link එක evaluatorට access request නැතිව open වෙනවාද?

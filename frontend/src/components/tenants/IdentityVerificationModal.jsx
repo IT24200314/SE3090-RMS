@@ -37,6 +37,13 @@ const IdentityVerificationModalContent = ({ onClose, application, onVerify }) =>
   const [ocrVerified, setOcrVerified] = useState(true);
   const [sanctionsCleared, setSanctionsCleared] = useState(true);
 
+  const hasCapturedImage = Boolean(
+    application.identityDocUrl && 
+    (application.identityDocUrl.startsWith('data:image') || 
+     application.identityDocUrl.startsWith('http'))
+  );
+  const [viewMode, setViewMode] = useState(hasCapturedImage ? 'photo' : 'card');
+
   const handleConfirmVerify = async () => {
     setLoading(true);
     try {
@@ -117,7 +124,36 @@ const IdentityVerificationModalContent = ({ onClose, application, onVerify }) =>
                 <FileCheck className="w-3.5 h-3.5 text-blue-600" />
                 NIC / Passport Preview
               </span>
+
               <div className="flex items-center gap-1">
+                {/* View Mode Toggle: Real Camera Photo vs Holographic NIC Card */}
+                {hasCapturedImage && (
+                  <div className={`flex items-center p-0.5 rounded-lg mr-2 border ${
+                    isLight ? 'bg-slate-100 border-slate-200' : 'bg-slate-900 border-slate-700'
+                  }`}>
+                    <button
+                      onClick={() => setViewMode('photo')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-all ${
+                        viewMode === 'photo'
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      📷 Captured Photo
+                    </button>
+                    <button
+                      onClick={() => setViewMode('card')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold cursor-pointer transition-all ${
+                        viewMode === 'card'
+                          ? 'bg-blue-600 text-white shadow-xs'
+                          : isLight ? 'text-slate-600 hover:text-slate-900' : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                    >
+                      🪪 Smart NIC Card
+                    </button>
+                  </div>
+                )}
+
                 <button
                   onClick={handleZoomIn}
                   className={`p-1 rounded transition-colors ${
@@ -167,47 +203,62 @@ const IdentityVerificationModalContent = ({ onClose, application, onVerify }) =>
                   transformOrigin: 'center center'
                 }}
               >
-                {/* Document Card with Security Hologram look */}
-                <div className="w-72 h-44 rounded-xl bg-gradient-to-br from-slate-800 via-slate-900 to-indigo-950 border-2 border-slate-700/80 p-4 shadow-2xl relative flex flex-col justify-between text-white">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <span className="text-[8px] font-bold text-amber-400 tracking-widest block uppercase">
-                        Democratic Socialist Republic of Sri Lanka
-                      </span>
-                      <span className="text-[11px] font-extrabold text-slate-100 block font-mono">
-                        NATIONAL IDENTITY CARD
-                      </span>
-                    </div>
-                    <div className="w-6 h-6 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center">
-                      <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse"></div>
-                    </div>
+                {viewMode === 'photo' && hasCapturedImage ? (
+                  <div className="flex flex-col items-center">
+                    <img 
+                      src={application.identityDocUrl} 
+                      alt="Captured KYC ID Document" 
+                      className="max-h-64 max-w-full rounded-xl shadow-2xl object-contain border-2 border-slate-700/80 bg-slate-900/40"
+                      onError={() => setViewMode('card')}
+                    />
+                    <span className="text-[10px] text-slate-400 font-mono mt-2 bg-black/60 px-2 py-0.5 rounded backdrop-blur-xs">
+                      Live Mobile Captured Document
+                    </span>
                   </div>
-
-                  <div className="flex items-center gap-3 my-1">
-                    <div className="w-12 h-14 rounded bg-slate-700/60 border border-slate-600 flex items-center justify-center">
-                      <UserCheck className="w-6 h-6 text-slate-300" />
-                    </div>
-                    <div className="space-y-0.5">
-                      <div className="text-[10px] font-semibold text-slate-100">
-                        {application.applicantName || 'KAMAL PERERA'}
+                ) : (
+                  /* Document Card with Security Hologram look */
+                  <div className="w-72 h-44 rounded-xl bg-gradient-to-br from-slate-800 via-slate-900 to-indigo-950 border-2 border-slate-700/80 p-4 shadow-2xl relative flex flex-col justify-between text-white">
+                    <div className="flex items-start justify-between">
+                      <div>
+                        <span className="text-[8px] font-bold text-amber-400 tracking-widest block uppercase">
+                          Democratic Socialist Republic of Sri Lanka
+                        </span>
+                        <span className="text-[11px] font-extrabold text-slate-100 block font-mono">
+                          NATIONAL IDENTITY CARD
+                        </span>
                       </div>
-                      <div className="text-[9px] font-mono text-emerald-400">199428501248 (Smart NIC)</div>
-                      <div className="text-[8px] text-slate-400">DOB: 12 OCT 1994 • Colombo</div>
+                      <div className="w-6 h-6 rounded-full bg-amber-400/20 border border-amber-400/40 flex items-center justify-center">
+                        <div className="w-3 h-3 rounded-full bg-amber-400 animate-pulse"></div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 my-1">
+                      <div className="w-12 h-14 rounded bg-slate-700/60 border border-slate-600 flex items-center justify-center">
+                        <UserCheck className="w-6 h-6 text-slate-300" />
+                      </div>
+                      <div className="space-y-0.5">
+                        <div className="text-[10px] font-semibold text-slate-100">
+                          {application.applicantName || 'KAMAL PERERA'}
+                        </div>
+                        <div className="text-[9px] font-mono text-emerald-400">199428501248 (Smart NIC)</div>
+                        <div className="text-[8px] text-slate-400">DOB: 12 OCT 1994 • Colombo</div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between border-t border-slate-700/60 pt-1.5 text-[8px] font-mono text-slate-400">
+                      <span>SECURITY CHIP VERIFIED</span>
+                      <span className="text-emerald-400">VALID THROUGH 2034</span>
                     </div>
                   </div>
-
-                  <div className="flex items-center justify-between border-t border-slate-700/60 pt-1.5 text-[8px] font-mono text-slate-400">
-                    <span>SECURITY CHIP VERIFIED</span>
-                    <span className="text-emerald-400">VALID THROUGH 2034</span>
-                  </div>
-                </div>
+                )}
               </div>
 
               {/* Watermark Overlay */}
-              <div className="absolute bottom-2 right-3 pointer-events-none text-[9px] text-slate-400 font-mono">
-                Doc Ref: {application.identityDocUrl ? application.identityDocUrl.split('/').pop() : 'nic_scan_verified.jpg'}
+              <div className="absolute bottom-2 right-3 pointer-events-none text-[9px] text-slate-400 font-mono bg-black/40 px-2 py-0.5 rounded backdrop-blur-xs">
+                Doc Ref: {application.identityDocUrl?.startsWith('data:') ? 'mobile_camera_kyc_capture.jpg' : application.identityDocUrl ? application.identityDocUrl.split('/').pop() : 'nic_scan_verified.jpg'}
               </div>
             </div>
+
           </div>
 
           {/* Right Pane (5 cols): Automated Verification Checklist & Financials */}
